@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://coqo6clwgi7fu"]
+
+[ext_resource type="Script" uid="uid://gokkkjlu8n5v" path="res://components/networking/websocket_server_connection/websocket_server_connection.gd" id="1_570ec"]
+
+[node name="WebsocketServerConnection" type="Node"]
+script = ExtResource("1_570ec")
