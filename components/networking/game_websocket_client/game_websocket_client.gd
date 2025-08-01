@@ -1,4 +1,4 @@
-class_name WebsocketClientConnection
+class_name GameWebsocketClient
 extends Node
 
 signal connected()
@@ -6,17 +6,22 @@ signal disconnected()
 
 var peer: WebSocketMultiplayerPeer = null
 
-func new(url: String) -> bool:
+func create_client(url: String) -> bool:
     assert(url != "", "url can not be empty, example: ws://localhost:9080")
 
     peer = WebSocketMultiplayerPeer.new()
 
-    # Todo: handle TLS
-    var error: int = peer.create_client(url)
+    # TODO: implement TLS
+    var tls_server_options: TLSOptions = null
+
+    var error: int = peer.create_client(url, tls_server_options)
     if error != OK:
         print("Can't create new client on url: {}".format(url))
+
+        peer = null
+
         return false
-    
+
     multiplayer.multiplayer_peer = peer
 
     multiplayer.connected_to_server.connect(_on_connection_succeeded)
@@ -26,11 +31,11 @@ func new(url: String) -> bool:
     return true
 
 func cleanup() -> void:
-    multiplayer.multiplayer_peer = null
-
     multiplayer.connected_to_server.disconnect(_on_connection_succeeded)
     multiplayer.connection_failed.disconnect(_on_connection_failed)
     multiplayer.server_disconnected.disconnect(_on_server_disconnected)
+
+    multiplayer.multiplayer_peer = null
 
 func _on_connection_succeeded() -> void:
     connected.emit()
