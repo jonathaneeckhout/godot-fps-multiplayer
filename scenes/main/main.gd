@@ -18,3 +18,8 @@ func start_client() -> void:
     get_window().title = "GFM (Client)"
 
     %GameClient.create_client()
+
+    await %GameClient.connected
+
+    print("OLEY CONNECTED,TIME TO AUTHENTICATE")
+    $%GameClient.game_client_authenticator.authenticate("test", "test")

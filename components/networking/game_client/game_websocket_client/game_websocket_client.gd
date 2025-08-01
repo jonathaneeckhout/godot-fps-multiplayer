@@ -6,6 +6,12 @@ signal disconnected()
 
 var peer: WebSocketMultiplayerPeer = null
 
+var game_client: GameClient = null
+
+func _ready() -> void:
+    game_client = get_parent()
+    assert(game_client != null)
+
 func create_client(url: String) -> bool:
     assert(url != "", "url can not be empty, example: ws://localhost:9080")
 
@@ -38,10 +44,16 @@ func cleanup() -> void:
     multiplayer.multiplayer_peer = null
 
 func _on_connection_succeeded() -> void:
+    print("Connected to server")
+
     connected.emit()
 
 func _on_connection_failed() -> void:
+    print("Failed to connect to server")
+
     disconnected.emit()
 
 func _on_server_disconnected() -> void:
+    print("Disconnected from server")
+
     disconnected.emit()

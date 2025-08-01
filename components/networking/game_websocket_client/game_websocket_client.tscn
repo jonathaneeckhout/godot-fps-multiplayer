@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://oj12ujnlh8l1"]
-
-[ext_resource type="Script" uid="uid://bt5tmc60t36dl" path="res://components/networking/game_websocket_client/game_websocket_client.gd" id="1_fgxdg"]
-
-[node name="GameWebsocketClient" type="Node"]
-script = ExtResource("1_fgxdg")

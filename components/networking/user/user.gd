@@ -23,9 +23,18 @@ func _ready() -> void:
     authentication_timer.timeout.connect(_on_authentication_timer_timeout)
     add_child(authentication_timer)
 
-# Disconnect user when not authenticated in time
-func _on_authentication_timer_timeout() -> void:
-    if not logged_in:
+func disconnect_from_server() -> void:
+    if peer_id != 0:
         multiplayer.multiplayer_peer.disconnect_peer(peer_id)
 
-        queue_free()
+
+# Disconnect user when not authenticated in time
+func _on_authentication_timer_timeout() -> void:
+    if logged_in:
+        authentication_timer.queue_free()
+        authentication_timer = null
+        return
+    
+    disconnect_from_server()
+
+    queue_free()
