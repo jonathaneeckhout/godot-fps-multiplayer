@@ -4,6 +4,9 @@ extends Node
 signal connected()
 signal disconnected()
 
+signal authenticated(result: bool)
+
+
 @export var mode: Modes = Modes.WEBSOCKET
 @export var game_server_url: String = "ws://localhost:9080"
 
@@ -15,6 +18,8 @@ var game_client_authenticator: GameClientAuthenticator = null
 func _ready() -> void:
     game_client_authenticator = get_node_or_null("GameClientAuthenticator")
     assert(game_client_authenticator != null, "Missing GameClientAuthenticator")
+
+    game_client_authenticator.authenticated.connect(_on_authenticated)
 
 func create_client() -> bool:
     match mode:
@@ -44,8 +49,14 @@ func cleanup() -> void:
         if game_websocket_client.disconnected.is_connected(_on_disconnected):
             game_websocket_client.disconnected.disconnect(_on_disconnected)
 
+func authenticate(username: String, key: String) -> bool:
+    return game_client_authenticator.authenticate(username, key)
+
 func _on_connected() -> void:
     connected.emit()
 
 func _on_disconnected() -> void:
     disconnected.emit()
+
+func _on_authenticated(result: bool) -> void:
+    authenticated.emit(result)

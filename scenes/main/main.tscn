@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://djh7p2c6631mg"]
+[gd_scene load_steps=10 format=3 uid="uid://djh7p2c6631mg"]
 
 [ext_resource type="Script" uid="uid://bdwr4ui3678fi" path="res://scenes/main/main.gd" id="1_hyk8p"]
 [ext_resource type="PackedScene" uid="uid://cur81b0ane53m" path="res://components/networking/game_server/game_server.tscn" id="2_k2fmo"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://oj12ujnlh8l1" path="res://components/networking/game_client/game_websocket_client/game_websocket_client.tscn" id="4_l3cfh"]
 [ext_resource type="PackedScene" uid="uid://lw6sob8ppwa" path="res://components/networking/game_server/game_server_authenticator/username_authenticator/username_authenticator.tscn" id="5_yyfjg"]
 [ext_resource type="PackedScene" uid="uid://nckwbr7ks5al" path="res://components/networking/game_client/game_client_authenticator/game_client_authenticator.tscn" id="7_yyfjg"]
+[ext_resource type="PackedScene" uid="uid://bynplakgjw7hk" path="res://scenes/game/game.tscn" id="9_b1x3f"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_hyk8p")
@@ -29,3 +30,5 @@ unique_name_in_owner = true
 [node name="GameWebsocketClient" parent="Connection/GameClient" instance=ExtResource("4_l3cfh")]
 
 [node name="GameClientAuthenticator" parent="Connection/GameClient" instance=ExtResource("7_yyfjg")]
+
+[node name="Game" parent="." instance=ExtResource("9_b1x3f")]

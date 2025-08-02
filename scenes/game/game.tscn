@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://bynplakgjw7hk"]
+
+[ext_resource type="PackedScene" uid="uid://ci03ig5cte1sj" path="res://scenes/players/other_player/other_player.tscn" id="1_sul5r"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_yyfjg"]
+size = Vector3(50, 1, 50)
+
+[node name="Game" type="Node3D"]
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Map" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_yyfjg")
+
+[node name="OtherPlayer" parent="." instance=ExtResource("1_sul5r")]

@@ -1,8 +1,7 @@
 class_name GameClientAuthenticator
 extends Node
 
-signal authenticated
-signal authentication_error()
+signal authenticated(result: bool)
 
 func _validate_username(username: String) -> bool:
     if username == null:
@@ -56,7 +55,4 @@ func _authenticate(username: String, key: String) -> void:
 
 @rpc("call_remote", "authority", "reliable")
 func _authentication_response(result: bool) -> void:
-    if result:
-        authenticated.emit()
-    else:
-        authentication_error.emit()
+    authenticated.emit(result)
