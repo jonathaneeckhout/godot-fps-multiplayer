@@ -4,8 +4,8 @@ extends Node
 signal new_connection(peer_id: int)
 signal connection_disconnected(peer_id: int)
 
-signal user_connected(user: String)
-signal user_disconnected(user: String)
+signal user_connected(peer_id: int, username: String)
+signal user_disconnected(peer_id: int, username: String)
 
 @export var mode: Modes = Modes.WEBSOCKET
 @export var bind_address: String = "*"
@@ -78,7 +78,7 @@ func remove_connection(peer_id: int) -> void:
     if user != null:
         user.queue_free()
 
-        user_disconnected.emit(user.username)
+        user_disconnected.emit(user.peer_id, user.username)
 
         return
 
@@ -89,7 +89,7 @@ func move_connection_to_users(user: User) -> void:
 
     users.add_child(user)
 
-    user_connected.emit(user.username)
+    user_connected.emit(user.peer_id, user.username)
 
 func get_user_by_peer_id(peer_id: int) -> User:
     for user: User in users.get_children():

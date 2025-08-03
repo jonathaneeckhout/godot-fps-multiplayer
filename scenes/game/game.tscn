@@ -1,11 +1,35 @@
-[gd_scene load_steps=3 format=3 uid="uid://bynplakgjw7hk"]
+[gd_scene load_steps=7 format=3 uid="uid://bynplakgjw7hk"]
 
+[ext_resource type="PackedScene" uid="uid://6gytalh108qd" path="res://components/networking/player_spawner/player_spawner.tscn" id="1_7h61r"]
 [ext_resource type="PackedScene" uid="uid://ci03ig5cte1sj" path="res://scenes/players/other_player/other_player.tscn" id="1_sul5r"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7h61r"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_0sr1o"]
+sky_material = SubResource("ProceduralSkyMaterial_7h61r")
+
+[sub_resource type="Environment" id="Environment_kelw5"]
+background_mode = 2
+sky = SubResource("Sky_0sr1o")
+tonemap_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_yyfjg"]
 size = Vector3(50, 1, 50)
 
 [node name="Game" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_kelw5")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="PlayerSpawner" parent="." node_paths=PackedStringArray("players_node") instance=ExtResource("1_7h61r")]
+players_node = NodePath("../Players")
+player_scene = ExtResource("1_sul5r")
 
 [node name="Players" type="Node3D" parent="."]
 
@@ -15,4 +39,5 @@ size = Vector3(50, 1, 50)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_yyfjg")
 
-[node name="OtherPlayer" parent="." instance=ExtResource("1_sul5r")]
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 30, 40)

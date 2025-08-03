@@ -12,17 +12,17 @@ func _ready() -> void:
 func start_server() -> void:
     get_window().title = "GFM (Server)"
 
-    %GameServer.create_server()
+    %Connection.game_server.create_server()
 
 func start_client() -> void:
     get_window().title = "GFM (Client)"
 
-    %GameClient.create_client()
+    %Connection.game_client.create_client()
 
-    await %GameClient.connected
+    await %Connection.game_client.connected
 
-    $%GameClient.authenticate("test", "test")
+    %Connection.game_client.authenticate("test", "test")
 
-    await %GameClient.authenticated
+    await %Connection.game_client.authenticated
 
     print("Authenticated")

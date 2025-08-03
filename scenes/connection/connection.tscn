@@ -1,0 +1,27 @@
+[gd_scene load_steps=9 format=3 uid="uid://btbve2wey7sua"]
+
+[ext_resource type="Script" uid="uid://cixtn4mbjdgmk" path="res://scenes/connection/connection.gd" id="1_7clkh"]
+[ext_resource type="PackedScene" uid="uid://cur81b0ane53m" path="res://scenes/connection/game_server/game_server.tscn" id="1_a0yom"]
+[ext_resource type="PackedScene" uid="uid://coqo6clwgi7fu" path="res://scenes/connection/game_server/game_websocket_server/game_websocket_server.tscn" id="2_7clkh"]
+[ext_resource type="PackedScene" uid="uid://b3bym7nr7f6tp" path="res://scenes/connection/game_server/game_server_authenticator/game_server_authenticator.tscn" id="3_57ikd"]
+[ext_resource type="PackedScene" uid="uid://lw6sob8ppwa" path="res://scenes/connection/game_server/game_server_authenticator/username_authenticator/username_authenticator.tscn" id="4_ejnk8"]
+[ext_resource type="PackedScene" uid="uid://bxiemegcoomb3" path="res://scenes/connection/game_client/game_client.tscn" id="5_v52kp"]
+[ext_resource type="PackedScene" uid="uid://oj12ujnlh8l1" path="res://scenes/connection/game_client/game_websocket_client/game_websocket_client.tscn" id="6_rxftw"]
+[ext_resource type="PackedScene" uid="uid://nckwbr7ks5al" path="res://scenes/connection/game_client/game_client_authenticator/game_client_authenticator.tscn" id="7_voonx"]
+
+[node name="Connection" type="Node"]
+script = ExtResource("1_7clkh")
+
+[node name="GameServer" parent="." instance=ExtResource("1_a0yom")]
+
+[node name="GameWebsocketServer" parent="GameServer" instance=ExtResource("2_7clkh")]
+
+[node name="GameServerAuthenticator" parent="GameServer" instance=ExtResource("3_57ikd")]
+
+[node name="UsernameAuthenticator" parent="GameServer/GameServerAuthenticator" instance=ExtResource("4_ejnk8")]
+
+[node name="GameClient" parent="." instance=ExtResource("5_v52kp")]
+
+[node name="GameWebsocketClient" parent="GameClient" instance=ExtResource("6_rxftw")]
+
+[node name="GameClientAuthenticator" parent="GameClient" instance=ExtResource("7_voonx")]
