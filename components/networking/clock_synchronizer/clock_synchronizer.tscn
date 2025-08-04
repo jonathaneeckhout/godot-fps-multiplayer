@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d33tphmkfqgib"]
+
+[ext_resource type="Script" uid="uid://cc03c7vsfy03m" path="res://components/networking/clock_synchronizer/clock_synchronizer.gd" id="1_ffwul"]
+
+[node name="ClockSynchronizer" type="Node"]
+script = ExtResource("1_ffwul")

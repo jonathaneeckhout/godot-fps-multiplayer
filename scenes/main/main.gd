@@ -12,17 +12,19 @@ func _ready() -> void:
 func start_server() -> void:
     get_window().title = "GFM (Server)"
 
-    %Connection.game_server.create_server()
+    Engine.set_physics_ticks_per_second(10)
+
+    Connection.game_server.create_server()
 
 func start_client() -> void:
     get_window().title = "GFM (Client)"
 
-    %Connection.game_client.create_client()
+    Connection.game_client.create_client()
 
-    await %Connection.game_client.connected
+    await Connection.game_client.connected
 
-    %Connection.game_client.authenticate("test", "test")
+    Connection.game_client.authenticate("test", "test")
 
-    await %Connection.game_client.authenticated
+    await Connection.game_client.authenticated
 
     print("Authenticated")

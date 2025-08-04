@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bynplakgjw7hk"]
+[gd_scene load_steps=10 format=3 uid="uid://bynplakgjw7hk"]
 
 [ext_resource type="PackedScene" uid="uid://6gytalh108qd" path="res://components/networking/player_spawner/player_spawner.tscn" id="1_7h61r"]
-[ext_resource type="PackedScene" uid="uid://ci03ig5cte1sj" path="res://scenes/players/other_player/other_player.tscn" id="1_sul5r"]
+[ext_resource type="PackedScene" uid="uid://ci03ig5cte1sj" path="res://scenes/player/player.tscn" id="1_sul5r"]
+[ext_resource type="PackedScene" uid="uid://dyxif56d2wdpv" path="res://components/random_spawn_location_picker/random_spawn_location_picker.tscn" id="4_kelw5"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7h61r"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -17,6 +18,11 @@ tonemap_mode = 2
 
 [sub_resource type="BoxMesh" id="BoxMesh_yyfjg"]
 size = Vector3(50, 1, 50)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0sr1o"]
+data = PackedVector3Array(-25, 0.5, 25, 25, 0.5, 25, -25, -0.5, 25, 25, 0.5, 25, 25, -0.5, 25, -25, -0.5, 25, 25, 0.5, -25, -25, 0.5, -25, 25, -0.5, -25, -25, 0.5, -25, -25, -0.5, -25, 25, -0.5, -25, 25, 0.5, 25, 25, 0.5, -25, 25, -0.5, 25, 25, 0.5, -25, 25, -0.5, -25, 25, -0.5, 25, -25, 0.5, -25, -25, 0.5, 25, -25, -0.5, -25, -25, 0.5, 25, -25, -0.5, 25, -25, -0.5, -25, 25, 0.5, 25, -25, 0.5, 25, 25, 0.5, -25, -25, 0.5, 25, -25, 0.5, -25, 25, 0.5, -25, -25, -0.5, 25, 25, -0.5, 25, -25, -0.5, -25, 25, -0.5, 25, 25, -0.5, -25, -25, -0.5, -25)
+
+[sub_resource type="BoxMesh" id="BoxMesh_0sr1o"]
 
 [node name="Game" type="Node3D"]
 
@@ -39,5 +45,48 @@ player_scene = ExtResource("1_sul5r")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
 mesh = SubResource("BoxMesh_yyfjg")
 
+[node name="StaticBody3D" type="StaticBody3D" parent="Map/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Map/MeshInstance3D/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_0sr1o")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 10)
+mesh = SubResource("BoxMesh_0sr1o")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.7, 10)
+mesh = SubResource("BoxMesh_0sr1o")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.7, -17)
+mesh = SubResource("BoxMesh_0sr1o")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.65122, 0.7, -17)
+mesh = SubResource("BoxMesh_0sr1o")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.7305, 0.7, 0.233662)
+mesh = SubResource("BoxMesh_0sr1o")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="Map"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22.7305, 0.7, 15.8033)
+mesh = SubResource("BoxMesh_0sr1o")
+
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 30, 40)
+
+[node name="RandomSpawnLocationPicker" parent="." instance=ExtResource("4_kelw5")]
+
+[node name="Marker3D" type="Marker3D" parent="RandomSpawnLocationPicker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 20)
+
+[node name="Marker3D2" type="Marker3D" parent="RandomSpawnLocationPicker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -15)
+
+[node name="Marker3D3" type="Marker3D" parent="RandomSpawnLocationPicker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, 0)
+
+[node name="Marker3D4" type="Marker3D" parent="RandomSpawnLocationPicker"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 1, 0)

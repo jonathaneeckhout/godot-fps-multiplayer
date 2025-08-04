@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3bym7nr7f6tp"]
+
+[ext_resource type="Script" uid="uid://h6snp6qgo7rn" path="res://scenes/networking/game_server/game_server_authenticator/game_server_authenticator.gd" id="1_vkolj"]
+
+[node name="GameServerAuthenticator" type="Node"]
+script = ExtResource("1_vkolj")

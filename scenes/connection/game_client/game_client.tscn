@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxiemegcoomb3"]
-
-[ext_resource type="Script" uid="uid://bpb0hk2r3w17v" path="res://scenes/connection/game_client/game_client.gd" id="1_cibn7"]
-
-[node name="GameClient" type="Node"]
-script = ExtResource("1_cibn7")
