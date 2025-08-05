@@ -142,6 +142,9 @@ mesh = SubResource("SphereMesh_ya1xr")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, -0.5, 0)
 mesh = SubResource("SphereMesh_ya1xr")
 
-[node name="LocalCamera" type="Camera3D" parent="."]
+[node name="LocalModel" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="LocalCamera" type="Camera3D" parent="LocalModel"]
+unique_name_in_owner = true

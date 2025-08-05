@@ -19,11 +19,13 @@ func start_server() -> void:
 func start_client() -> void:
     get_window().title = "GFM (Client)"
 
+    Engine.set_physics_ticks_per_second(30)
+
     Connection.game_client.create_client()
 
     await Connection.game_client.connected
 
-    Connection.game_client.authenticate("test", "test")
+    Connection.game_client.authenticate("test_{0}".format([multiplayer.get_unique_id()]), "test")
 
     await Connection.game_client.authenticated
 
