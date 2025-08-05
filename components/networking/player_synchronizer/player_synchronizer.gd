@@ -11,6 +11,12 @@ var last_sync_timestamp: float = 0.0
 var last_sync_position: Vector3 = Vector3.ZERO
 var last_sync_rotation: Vector3 = Vector3.ZERO
 
+var transform_buffer: Array[Dictionary] = []
+var transform_buffer_size: int = 20
+
+# Server runs at 10fps
+var interpolation_offset: float = (1.0 / 10.0) * 2
+
 var mode: Modes = Modes.SERVER
 
 func _ready() -> void:
@@ -105,8 +111,6 @@ func local_client_sync_translation() -> void:
     player.position.x = last_sync_position.x
     player.position.z = last_sync_position.z
 
-    # player.rotation = last_sync_rotation
-
 func local_client_process_input(delta: float) -> void:
     while input_buffer.size() > 0 and input_buffer[0]["ts"] <= last_sync_timestamp:
         input_buffer.remove_at(0)
@@ -123,8 +127,35 @@ func local_client_process_input(delta: float) -> void:
         player.move_and_slide()
 
 func other_client_physics_process(_delta: float) -> void:
-    player.position = last_sync_position
-    player.rotation = last_sync_rotation
+    if transform_buffer.size() < 2:
+        player.position = last_sync_position
+        player.rotation = last_sync_rotation
+    else:
+        var current_time: float = Connection.clock_synchronizer.get_time()
+        var render_time: float = current_time - interpolation_offset
+
+        for i in range(transform_buffer.size() - 1):
+            if transform_buffer[i]["ts"] <= render_time and transform_buffer[i + 1]["ts"] >= render_time:
+                var t: float = (render_time - transform_buffer[i]["ts"]) / (transform_buffer[i + 1]["ts"] - transform_buffer[i]["ts"])
+                player.position = transform_buffer[i]["po"].lerp(transform_buffer[i + 1]["po"], t)
+
+                # Normalize the rotation angles to the range [0, 2*PI)
+                var rotation1: float = fmod(transform_buffer[i]["ro"].y, 2 * PI)
+                var rotation2: float = fmod(transform_buffer[i + 1]["ro"].y, 2 * PI)
+
+                # Ensure we take the shortest path around the circle
+                if abs(rotation2 - rotation1) > PI:
+                    if rotation2 > rotation1:
+                        rotation2 -= 2 * PI
+                    else:
+                        rotation1 -= 2 * PI
+
+                # Interpolate the rotation
+                var rotation: float = lerp(rotation1, rotation2, t)
+                player.rotation.y = rotation
+                break
+
+
 
 func perform_physics_step(fraction: float):
     player.velocity /= fraction
@@ -150,3 +181,9 @@ func _sync_trans(timestamp: float, position: Vector3, rotation: Vector3) -> void
     last_sync_timestamp = timestamp
     last_sync_position = position
     last_sync_rotation = rotation
+
+    if mode == Modes.OTHER:
+        transform_buffer.append({"ts": timestamp, "po": position, "ro": rotation})
+
+        if transform_buffer.size() > transform_buffer_size:
+            transform_buffer.remove_at(0)
