@@ -30,11 +30,10 @@ func _on_user_disconnected(peer_id: int, username: String) -> void:
 
 # Adding player on server side
 func add_player(peer_id: int, username: String) -> void:
-    var player: CharacterBody3D = player_scene.instantiate()
+    var player: Player = player_scene.instantiate()
     player.name = username
-
+    player.peer_id = peer_id
     player.position = spawn_location_picker.get_spawn_location()
-
     players_node.add_child(player)
 
     _add_player.rpc(peer_id, username, player.position)

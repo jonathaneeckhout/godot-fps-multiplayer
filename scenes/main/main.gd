@@ -12,7 +12,7 @@ func _ready() -> void:
 func start_server() -> void:
     get_window().title = "GFM (Server)"
 
-    Engine.set_physics_ticks_per_second(10)
+    Engine.set_physics_ticks_per_second(30)
 
     Connection.game_server.create_server()
 

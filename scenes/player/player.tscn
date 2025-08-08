@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3 uid="uid://ci03ig5cte1sj"]
+[gd_scene load_steps=20 format=3 uid="uid://ci03ig5cte1sj"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/networking/player_synchronizer/player_synchronizer.tscn" id="2_dovo2"]
+[ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/networking/player_input/player_input.tscn" id="3_gmlin"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
@@ -74,6 +75,8 @@ height = 0.3
 script = ExtResource("1_8afob")
 
 [node name="PlayerSynchronizer" parent="." instance=ExtResource("2_dovo2")]
+
+[node name="PlayerInput" parent="." instance=ExtResource("3_gmlin")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
