@@ -13,10 +13,11 @@ var last_sync_rotation: Vector3 = Vector3.ZERO
 var transform_buffer: Array[Dictionary] = []
 var transform_buffer_size: int = 20
 
-# Server runs at 10fps
-var interpolation_offset: float = (1.0 / 10.0) * 2
+var interpolation_offset: float = 0.1
 
-var gravity = ProjectSettings.get_setting(&"physics/3d/default_gravity")
+var gravity = ProjectSettings.get_setting(&"physics/3d/default_gravity") * 2
+
+var position_buffer: Array[Dictionary] = []
 
 func _ready() -> void:
     player = get_parent()
@@ -39,13 +40,16 @@ func _physics_process(delta: float) -> void:
             other_client_physics_process(delta)
 
 func server_physics_process(delta: float) -> void:
-    for input in player_input.input_buffer:
-        player.velocity.x = input["di"].x * player.movement_speed
-        player.velocity.z = input["di"].y * player.movement_speed
+    if player_input.input_buffer.is_empty():
+        return
 
+    for input in player_input.input_buffer:
         _force_update_is_on_floor()
 
         if player.is_on_floor():
+            player.velocity.x = input["di"].x * player.movement_speed
+            player.velocity.z = input["di"].y * player.movement_speed
+
             if input["ju"]:
                 player.velocity.y = player.jump_force
         else:
@@ -53,8 +57,7 @@ func server_physics_process(delta: float) -> void:
 
         player.move_and_slide()
 
-    if not player_input.input_buffer.is_empty():
-        last_timestamp = player_input.input_buffer[-1]["ts"]
+    last_timestamp = player_input.input_buffer[-1]["ts"]
 
     player_input.input_buffer.clear()
 
@@ -67,26 +70,35 @@ func local_client_physics_process(delta: float) -> void:
     local_client_process_input(delta)
 
 func local_client_sync_translation() -> void:
-    player.position = last_sync_position
-    # player.rotation = last_sync_rotation
+    if position_buffer.is_empty():
+        return
+
+    while position_buffer.size() > 1 and position_buffer[0]["ts"] < last_sync_timestamp:
+        position_buffer.remove_at(0)
+
+    if position_buffer[0]["ts"] == last_sync_timestamp:
+        if position_buffer[0]["pos"] != last_sync_position:
+            player.position = last_sync_position
+
+            #TODO: reapply inputs
+        else:
+            player_input.input_buffer.clear()
 
 func local_client_process_input(delta: float) -> void:
-    while player_input.input_buffer.size() > 0 and player_input.input_buffer[0]["ts"] <= last_sync_timestamp:
-        player_input.input_buffer.remove_at(0)
+    if player.is_on_floor():
+        player.velocity.x = player_input.direction.x * player.movement_speed
+        player.velocity.z = player_input.direction.y * player.movement_speed
 
-    for input in player_input.input_buffer:
-        player.velocity.x = input["di"].x * player.movement_speed
-        player.velocity.z = input["di"].y * player.movement_speed
+        if player_input.jump:
+            player.velocity.y = player.jump_force
+    else:
+        player.velocity.y -= gravity * delta
 
-        _force_update_is_on_floor()
+    player.move_and_slide()
 
-        if player.is_on_floor():
-            if input["ju"]:
-                player.velocity.y = player.jump_force
-        else:
-            player.velocity.y -= gravity * delta
+    player_input.input_buffer.clear()
 
-        player.move_and_slide()
+    position_buffer.append({"ts": player_input.timestamp, "pos": player.position})
 
 func other_client_physics_process(_delta: float) -> void:
     if transform_buffer.size() < 2:
@@ -134,11 +146,11 @@ func _sync_trans(timestamp: float, position: Vector3, rotation: Vector3) -> void
     last_sync_position = position
     last_sync_rotation = rotation
 
-    # if mode == Modes.OTHER:
-    #     transform_buffer.append({"ts": timestamp, "po": position, "ro": rotation})
+    if player.mode == Player.Modes.OTHER:
+        transform_buffer.append({"ts": timestamp, "po": position, "ro": rotation})
 
-    #     if transform_buffer.size() > transform_buffer_size:
-    #         transform_buffer.remove_at(0)
+        if transform_buffer.size() > transform_buffer_size:
+            transform_buffer.remove_at(0)
 
 
 func _force_update_is_on_floor():

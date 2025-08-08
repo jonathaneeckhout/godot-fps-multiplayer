@@ -1,6 +1,10 @@
 class_name PlayerInput
 extends Node
 
+var direction: Vector2 = Vector2.ZERO
+var jump: bool = false
+var timestamp: float = 0.0
+
 # Buffer to store all inputs received from the client
 var input_buffer: Array[Dictionary] = []
 
@@ -15,9 +19,9 @@ func _ready() -> void:
 
 
 func _physics_process(delta):
-    var timestamp: float = Connection.clock_synchronizer.get_time()
+    timestamp = Connection.clock_synchronizer.get_time()
 
-    var direction: Vector2 = Input.get_vector("strafe_left", "strafe_right", "move_up", "move_down")
+    direction = Input.get_vector("strafe_left", "strafe_right", "move_up", "move_down")
 
     var transform_direction: Vector3 = (player.transform.basis * Vector3(direction.x, 0, direction.y)).normalized()
 
@@ -25,7 +29,7 @@ func _physics_process(delta):
     direction.x = transform_direction.x
     direction.y = transform_direction.z
 
-    var jump: bool = Input.is_action_just_pressed("jump")
+    jump = Input.is_action_just_pressed("jump")
 
     input_buffer.append({"ts": timestamp, "di": direction, "ju": jump, "dt": delta})
 
@@ -36,7 +40,7 @@ func _physics_process(delta):
 
 
 @rpc("call_remote", "any_peer", "reliable")
-func _sync_input(timestamp: float, direction: Vector2, rotation: Vector3, jump: bool, delta: float) -> void:
+func _sync_input(ts: float, dir: Vector2, rotation: Vector3, ju: bool, delta: float) -> void:
     if not multiplayer.is_server():
         return
 
@@ -44,4 +48,4 @@ func _sync_input(timestamp: float, direction: Vector2, rotation: Vector3, jump: 
     if player.peer_id != peer_id:
         return
 
-    input_buffer.append({"ts": timestamp, "di": direction, "ro": rotation, "ju": jump, "dt": delta})
+    input_buffer.append({"ts": ts, "di": dir, "ro": rotation, "ju": ju, "dt": delta})
