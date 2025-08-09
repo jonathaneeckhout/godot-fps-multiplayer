@@ -30,6 +30,7 @@ func _ready() -> void:
     last_sync_position = player.position
     last_sync_rotation = player.rotation
 
+
 func _physics_process(delta: float) -> void:
     match player.mode:
         Player.Modes.SERVER:
@@ -39,16 +40,23 @@ func _physics_process(delta: float) -> void:
         Player.Modes.OTHER:
             other_client_physics_process(delta)
 
+
 func server_physics_process(delta: float) -> void:
     if player_input.input_buffer.is_empty():
         return
 
     for input in player_input.input_buffer:
+        player.rotate_object_local(Vector3(0, 1, 0), input["la"].x)
+
         _force_update_is_on_floor()
 
         if player.is_on_floor():
-            player.velocity.x = input["di"].x * player.movement_speed
-            player.velocity.z = input["di"].y * player.movement_speed
+            var input_dir: Vector2 = input["di"]
+
+            var direction: Vector3 = (player.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+            player.velocity.x = direction.x * player.movement_speed
+            player.velocity.z = direction.z * player.movement_speed
 
             if input["ju"]:
                 player.velocity.y = player.jump_force
@@ -69,6 +77,7 @@ func local_client_physics_process(delta: float) -> void:
 
     local_client_process_input(delta)
 
+
 func local_client_sync_translation() -> void:
     if position_buffer.is_empty():
         return
@@ -84,10 +93,17 @@ func local_client_sync_translation() -> void:
         else:
             player_input.input_buffer.clear()
 
+
 func local_client_process_input(delta: float) -> void:
+    player.rotate_object_local(Vector3(0, 1, 0), player_input.look_angle.x)
+
     if player.is_on_floor():
-        player.velocity.x = player_input.direction.x * player.movement_speed
-        player.velocity.z = player_input.direction.y * player.movement_speed
+        var input_dir: Vector2 = player_input.direction
+
+        var direction: Vector3 = (player.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+
+        player.velocity.x = direction.x * player.movement_speed
+        player.velocity.z = direction.z * player.movement_speed
 
         if player_input.jump:
             player.velocity.y = player.jump_force
@@ -99,6 +115,7 @@ func local_client_process_input(delta: float) -> void:
     player_input.input_buffer.clear()
 
     position_buffer.append({"ts": player_input.timestamp, "pos": player.position})
+
 
 func other_client_physics_process(_delta: float) -> void:
     if transform_buffer.size() < 2:
@@ -129,12 +146,14 @@ func other_client_physics_process(_delta: float) -> void:
                 player.rotation.y = rotation
                 break
 
+
 func perform_physics_step(fraction: float):
     player.velocity /= fraction
     # Perform the actual move and collision checking
     player.move_and_slide()
 
     player.velocity *= fraction
+
 
 @rpc("call_remote", "authority", "unreliable")
 func _sync_trans(timestamp: float, position: Vector3, rotation: Vector3) -> void:
