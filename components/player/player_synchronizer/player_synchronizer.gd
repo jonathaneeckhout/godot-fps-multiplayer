@@ -10,6 +10,7 @@ var last_timestamp: float = 0.0
 
 var last_sync_timestamp: float = 0.0
 var last_sync_transform: Transform3D
+var last_head_rotation: Vector3 = Vector3.ZERO
 
 var transform_buffer: Array[Dictionary] = []
 var transform_buffer_size: int = 20
@@ -77,7 +78,7 @@ func server_physics_process(delta: float) -> void:
 
     player_input.input_buffer.clear()
 
-    _sync_trans.rpc(last_timestamp, player.transform)
+    _sync_trans.rpc(last_timestamp, player.transform, head.rotation)
 
 
 func local_client_physics_process(delta: float) -> void:
@@ -94,7 +95,7 @@ func local_client_sync_translation() -> void:
         position_buffer.remove_at(0)
 
     if position_buffer[0]["ts"] == last_sync_timestamp:
-        if position_buffer[0]["tr"] != last_sync_transform:
+        if position_buffer[0]["tf"] != last_sync_transform:
             player.transform = last_sync_transform
 
             #TODO: reapply inputs
@@ -128,12 +129,13 @@ func local_client_process_input(delta: float) -> void:
 
     player_input.input_buffer.clear()
 
-    position_buffer.append({"ts": player_input.timestamp, "tr": player.transform})
+    position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
 
 
 func other_client_physics_process(_delta: float) -> void:
     if transform_buffer.size() < 2:
         player.transform = last_sync_transform
+        head.rotation = last_head_rotation
     else:
         var current_time: float = Connection.clock_synchronizer.get_time()
         var render_time: float = current_time - interpolation_offset
@@ -141,8 +143,8 @@ func other_client_physics_process(_delta: float) -> void:
         for i in range(transform_buffer.size() - 1):
             if transform_buffer[i]["ts"] <= render_time and transform_buffer[i + 1]["ts"] >= render_time:
                 var t: float = (render_time - transform_buffer[i]["ts"]) / (transform_buffer[i + 1]["ts"] - transform_buffer[i]["ts"])
-                player.transform = transform_buffer[i]["tr"].interpolate_with(transform_buffer[i + 1]["tr"], t)
-
+                player.transform = transform_buffer[i]["tf"].interpolate_with(transform_buffer[i + 1]["tf"], t)
+                head.rotation = transform_buffer[i]["hr"].lerp(transform_buffer[i + 1]["hr"], t)
                 break
 
 
@@ -155,16 +157,17 @@ func perform_physics_step(fraction: float):
 
 
 @rpc("call_remote", "authority", "unreliable")
-func _sync_trans(timestamp: float, transform: Transform3D) -> void:
+func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
     # Ignore older updates
-    if timestamp < last_sync_timestamp:
+    if ts < last_sync_timestamp:
         return
 
-    last_sync_timestamp = timestamp
-    last_sync_transform = transform
+    last_sync_timestamp = ts
+    last_sync_transform = tf
+    last_head_rotation = hr
 
     if player.mode == Player.Modes.OTHER:
-        transform_buffer.append({"ts": timestamp, "tr": transform})
+        transform_buffer.append({"ts": ts, "tf": tf, "hr": hr})
 
         if transform_buffer.size() > transform_buffer_size:
             transform_buffer.remove_at(0)
