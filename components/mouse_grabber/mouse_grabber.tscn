@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dy34yudhpjhyj"]
-
-[ext_resource type="Script" uid="uid://baoad80lp7l7u" path="res://components/mouse_grabber/mouse_grabber.gd" id="1_icyo8"]
-
-[node name="MouseGrabber" type="Node"]
-script = ExtResource("1_icyo8")

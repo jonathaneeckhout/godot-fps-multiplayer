@@ -1,14 +1,15 @@
 class_name PlayerSynchronizer
 extends Node
 
+@export var head: Node3D = null
+
 var player: Player = null
 var player_input: PlayerInput = null
 
 var last_timestamp: float = 0.0
 
 var last_sync_timestamp: float = 0.0
-var last_sync_position: Vector3 = Vector3.ZERO
-var last_sync_rotation: Vector3 = Vector3.ZERO
+var last_sync_transform: Transform3D
 
 var transform_buffer: Array[Dictionary] = []
 var transform_buffer_size: int = 20
@@ -26,9 +27,10 @@ func _ready() -> void:
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
 
+    assert(head != null, "Please set head")
+
     last_sync_timestamp = Connection.clock_synchronizer.get_time()
-    last_sync_position = player.position
-    last_sync_rotation = player.rotation
+    last_sync_transform = player.transform
 
 
 func _physics_process(delta: float) -> void:
@@ -48,11 +50,11 @@ func server_physics_process(delta: float) -> void:
     for input in player_input.input_buffer:
         player.rotate_object_local(Vector3(0, 1, 0), input["la"].x)
 
-        player.local_model.rotate_object_local(Vector3(1, 0, 0), input["la"].y)
+        head.rotate_object_local(Vector3(1, 0, 0), input["la"].y)
 
-        player.local_model.rotation.x = clamp(player.local_model.rotation.x, -1.57, 1.57)
-        player.local_model.rotation.z = 0
-        player.local_model.rotation.y = 0
+        head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
+        head.rotation.z = 0
+        head.rotation.y = 0
 
         _force_update_is_on_floor()
 
@@ -75,7 +77,7 @@ func server_physics_process(delta: float) -> void:
 
     player_input.input_buffer.clear()
 
-    _sync_trans.rpc(last_timestamp, player.position, player.rotation)
+    _sync_trans.rpc(last_timestamp, player.transform)
 
 
 func local_client_physics_process(delta: float) -> void:
@@ -92,8 +94,8 @@ func local_client_sync_translation() -> void:
         position_buffer.remove_at(0)
 
     if position_buffer[0]["ts"] == last_sync_timestamp:
-        if position_buffer[0]["pos"] != last_sync_position:
-            player.position = last_sync_position
+        if position_buffer[0]["tr"] != last_sync_transform:
+            player.transform = last_sync_transform
 
             #TODO: reapply inputs
         else:
@@ -101,14 +103,13 @@ func local_client_sync_translation() -> void:
 
 
 func local_client_process_input(delta: float) -> void:
-
     player.rotate_object_local(Vector3(0, 1, 0), player_input.look_angle.x)
 
-    player.local_model.rotate_object_local(Vector3(1, 0, 0), player_input.look_angle.y)
+    head.rotate_object_local(Vector3(1, 0, 0), player_input.look_angle.y)
 
-    player.local_model.rotation.x = clamp(player.local_model.rotation.x, -1.57, 1.57)
-    player.local_model.rotation.z = 0
-    player.local_model.rotation.y = 0
+    head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
+    head.rotation.z = 0
+    head.rotation.y = 0
 
     if player.is_on_floor():
         var input_dir: Vector2 = player_input.direction
@@ -127,13 +128,12 @@ func local_client_process_input(delta: float) -> void:
 
     player_input.input_buffer.clear()
 
-    position_buffer.append({"ts": player_input.timestamp, "pos": player.position})
+    position_buffer.append({"ts": player_input.timestamp, "tr": player.transform})
 
 
 func other_client_physics_process(_delta: float) -> void:
     if transform_buffer.size() < 2:
-        player.position = last_sync_position
-        player.rotation = last_sync_rotation
+        player.transform = last_sync_transform
     else:
         var current_time: float = Connection.clock_synchronizer.get_time()
         var render_time: float = current_time - interpolation_offset
@@ -141,22 +141,8 @@ func other_client_physics_process(_delta: float) -> void:
         for i in range(transform_buffer.size() - 1):
             if transform_buffer[i]["ts"] <= render_time and transform_buffer[i + 1]["ts"] >= render_time:
                 var t: float = (render_time - transform_buffer[i]["ts"]) / (transform_buffer[i + 1]["ts"] - transform_buffer[i]["ts"])
-                player.position = transform_buffer[i]["po"].lerp(transform_buffer[i + 1]["po"], t)
+                player.transform = transform_buffer[i]["tr"].interpolate_with(transform_buffer[i + 1]["tr"], t)
 
-                # Normalize the rotation angles to the range [0, 2*PI)
-                var rotation1: float = fmod(transform_buffer[i]["ro"].y, 2 * PI)
-                var rotation2: float = fmod(transform_buffer[i + 1]["ro"].y, 2 * PI)
-
-                # Ensure we take the shortest path around the circle
-                if abs(rotation2 - rotation1) > PI:
-                    if rotation2 > rotation1:
-                        rotation2 -= 2 * PI
-                    else:
-                        rotation1 -= 2 * PI
-
-                # Interpolate the rotation
-                var rotation: float = lerp(rotation1, rotation2, t)
-                player.rotation.y = rotation
                 break
 
 
@@ -169,17 +155,16 @@ func perform_physics_step(fraction: float):
 
 
 @rpc("call_remote", "authority", "unreliable")
-func _sync_trans(timestamp: float, position: Vector3, rotation: Vector3) -> void:
+func _sync_trans(timestamp: float, transform: Transform3D) -> void:
     # Ignore older updates
     if timestamp < last_sync_timestamp:
         return
 
     last_sync_timestamp = timestamp
-    last_sync_position = position
-    last_sync_rotation = rotation
+    last_sync_transform = transform
 
     if player.mode == Player.Modes.OTHER:
-        transform_buffer.append({"ts": timestamp, "po": position, "ro": rotation})
+        transform_buffer.append({"ts": timestamp, "tr": transform})
 
         if transform_buffer.size() > transform_buffer_size:
             transform_buffer.remove_at(0)

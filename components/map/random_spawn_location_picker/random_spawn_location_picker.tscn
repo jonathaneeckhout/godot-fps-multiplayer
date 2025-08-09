@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyxif56d2wdpv"]
+
+[ext_resource type="Script" uid="uid://dxee1u4yk7buy" path="res://components/map/random_spawn_location_picker/random_spawn_location_picker.gd" id="1_df131"]
+
+[node name="RandomSpawnLocationPicker" type="Node3D"]
+script = ExtResource("1_df131")

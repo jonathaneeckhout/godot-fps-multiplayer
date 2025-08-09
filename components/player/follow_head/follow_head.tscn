@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://vbp50deepeeh"]
+
+[ext_resource type="Script" uid="uid://cxj4elmaahdi4" path="res://components/player/follow_head/follow_head.gd" id="1_y8shx"]
+
+[node name="FollowHead" type="Node"]
+script = ExtResource("1_y8shx")

@@ -1,8 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://ci03ig5cte1sj"]
+[gd_scene load_steps=21 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
-[ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/networking/player_synchronizer/player_synchronizer.tscn" id="2_dovo2"]
-[ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/networking/player_input/player_input.tscn" id="3_gmlin"]
+[ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/player/player_input/player_input.tscn" id="2_gmlin"]
+[ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/player/player_synchronizer/player_synchronizer.tscn" id="3_lvxji"]
+[ext_resource type="PackedScene" uid="uid://vbp50deepeeh" path="res://components/player/follow_head/follow_head.tscn" id="4_lvxji"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
@@ -74,80 +75,142 @@ height = 0.3
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_8afob")
 
-[node name="PlayerSynchronizer" parent="." instance=ExtResource("2_dovo2")]
-
-[node name="PlayerInput" parent="." instance=ExtResource("3_gmlin")]
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_ya1xr")
 
-[node name="OtherModel" type="Node3D" parent="."]
+[node name="Model" type="Node3D" parent="."]
 unique_name_in_owner = true
 
-[node name="Body" type="MeshInstance3D" parent="OtherModel"]
+[node name="Body" type="MeshInstance3D" parent="Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 mesh = SubResource("CapsuleMesh_ya1xr")
 skeleton = NodePath("../..")
 
-[node name="RightEye" type="MeshInstance3D" parent="OtherModel/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.3, -0.5)
+[node name="RightEye" type="MeshInstance3D" parent="Model/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.3, 0.5)
 mesh = SubResource("SphereMesh_ph0x8")
 
-[node name="LeftEye" type="MeshInstance3D" parent="OtherModel/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.3, -0.5)
+[node name="LeftEye" type="MeshInstance3D" parent="Model/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.3, 0.5)
 mesh = SubResource("SphereMesh_ph0x8")
 
-[node name="Pants" type="MeshInstance3D" parent="OtherModel/Body"]
+[node name="Pants" type="MeshInstance3D" parent="Model/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
 mesh = SubResource("CylinderMesh_iweaw")
 
-[node name="Belt" type="MeshInstance3D" parent="OtherModel/Body/Pants"]
+[node name="Belt" type="MeshInstance3D" parent="Model/Body/Pants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
 mesh = SubResource("CylinderMesh_ya1xr")
 skeleton = NodePath("../..")
 
-[node name="Headband" type="MeshInstance3D" parent="OtherModel/Body"]
+[node name="Headband" type="MeshInstance3D" parent="Model/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 mesh = SubResource("CylinderMesh_ews16")
 
-[node name="LeftKnot" type="MeshInstance3D" parent="OtherModel/Body/Headband"]
-transform = Transform3D(0.707107, 0.612372, -0.353553, 0, 0.5, 0.866025, 0.707107, -0.612372, 0.353553, -0.05, -0.05, 0.55)
+[node name="LeftKnot" type="MeshInstance3D" parent="Model/Body/Headband"]
+transform = Transform3D(0.707107, -0.612372, -0.353553, 0, 0.5, -0.866025, 0.707107, 0.612372, 0.353553, 0.05, -0.05, -0.55)
 mesh = SubResource("CapsuleMesh_iweaw")
 
-[node name="RightKnot" type="MeshInstance3D" parent="OtherModel/Body/Headband"]
-transform = Transform3D(0.707107, -0.612372, 0.353553, 0, 0.5, 0.866025, -0.707107, -0.612372, 0.353553, 0.05, -0.05, 0.55)
+[node name="RightKnot" type="MeshInstance3D" parent="Model/Body/Headband"]
+transform = Transform3D(0.707107, 0.612372, 0.353553, 0, 0.5, -0.866025, -0.707107, 0.612372, 0.353553, -0.05, -0.05, -0.55)
 mesh = SubResource("CapsuleMesh_iweaw")
 
-[node name="RightLeg" type="MeshInstance3D" parent="OtherModel/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.9, 0)
-mesh = SubResource("CapsuleMesh_ph0x8")
-skeleton = NodePath("../..")
-
-[node name="RightFoot" type="MeshInstance3D" parent="OtherModel/Body/RightLeg"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, -0.1)
-mesh = SubResource("CapsuleMesh_itfo8")
-
-[node name="LeftLeg" type="MeshInstance3D" parent="OtherModel/Body"]
+[node name="RightLeg" type="MeshInstance3D" parent="Model/Body"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.9, 0)
 mesh = SubResource("CapsuleMesh_ph0x8")
 skeleton = NodePath("../..")
 
-[node name="LeftFoot" type="MeshInstance3D" parent="OtherModel/Body/LeftLeg"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, -0.1)
+[node name="RightFoot" type="MeshInstance3D" parent="Model/Body/RightLeg"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, 0.1)
 mesh = SubResource("CapsuleMesh_itfo8")
 
-[node name="LeftHand" type="MeshInstance3D" parent="OtherModel/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, -0.5, 0)
-mesh = SubResource("SphereMesh_ya1xr")
+[node name="LeftLeg" type="MeshInstance3D" parent="Model/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.9, 0)
+mesh = SubResource("CapsuleMesh_ph0x8")
+skeleton = NodePath("../..")
 
-[node name="RightHand" type="MeshInstance3D" parent="OtherModel/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, -0.5, 0)
-mesh = SubResource("SphereMesh_ya1xr")
+[node name="LeftFoot" type="MeshInstance3D" parent="Model/Body/LeftLeg"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, 0.1)
+mesh = SubResource("CapsuleMesh_itfo8")
 
-[node name="LocalModel" type="Node3D" parent="."]
+[node name="shoulder" type="Node3D" parent="Model/Body"]
+
+[node name="LeftHand" type="MeshInstance3D" parent="Model/Body/shoulder"]
+transform = Transform3D(-0.830012, 0.557745, 0, -0.429129, -0.638611, -0.638768, -0.35627, -0.530185, 0.7694, 0.14, -0.064, 0.7)
+mesh = SubResource("SphereMesh_ya1xr")
+skeleton = NodePath("../..")
+
+[node name="RightHand" type="MeshInstance3D" parent="Model/Body/shoulder"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.038, 0.73)
+mesh = SubResource("SphereMesh_ya1xr")
+skeleton = NodePath("../..")
+
+[node name="OtherWeaponLocation" type="Marker3D" parent="Model/Body/shoulder/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.1, -0.1)
+
+[node name="Head" type="Node3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
-[node name="LocalCamera" type="Camera3D" parent="LocalModel"]
+[node name="Camera" type="Camera3D" parent="Head"]
 unique_name_in_owner = true
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="Hands" type="Node3D" parent="Head"]
+unique_name_in_owner = true
+
+[node name="LeftHand" type="MeshInstance3D" parent="Head/Hands"]
+transform = Transform3D(0.739161, -0.673529, 0, 0.488738, 0.536364, -0.688076, 0.463439, 0.508599, 0.725639, 0.146, -0.5, 0.778)
+mesh = SubResource("SphereMesh_ya1xr")
+skeleton = NodePath("../..")
+
+[node name="RightHand" type="MeshInstance3D" parent="Head/Hands"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0.73)
+mesh = SubResource("SphereMesh_ya1xr")
+skeleton = NodePath("../..")
+
+[node name="LocalWeaponLocation" type="Marker3D" parent="Head/Hands/RightHand"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.1)
+
+[node name="Muzzle" type="Marker3D" parent="Head/Hands"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="PlayerInput" parent="." instance=ExtResource("2_gmlin")]
+
+[node name="PlayerSynchronizer" parent="." node_paths=PackedStringArray("head") instance=ExtResource("3_lvxji")]
+head = NodePath("../Head")
+
+[node name="FollowHead" parent="." node_paths=PackedStringArray("head", "replica") instance=ExtResource("4_lvxji")]
+head = NodePath("../Head")
+replica = NodePath("../Model/Body/shoulder")
+
+[node name="HUDCanvasLayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDCanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -256.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Label" type="Label" parent="HUDCanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "X"
+horizontal_alignment = 1
