@@ -48,6 +48,12 @@ func server_physics_process(delta: float) -> void:
     for input in player_input.input_buffer:
         player.rotate_object_local(Vector3(0, 1, 0), input["la"].x)
 
+        player.local_model.rotate_object_local(Vector3(1, 0, 0), input["la"].y)
+
+        player.local_model.rotation.x = clamp(player.local_model.rotation.x, -1.57, 1.57)
+        player.local_model.rotation.z = 0
+        player.local_model.rotation.y = 0
+
         _force_update_is_on_floor()
 
         if player.is_on_floor():
@@ -95,7 +101,14 @@ func local_client_sync_translation() -> void:
 
 
 func local_client_process_input(delta: float) -> void:
+
     player.rotate_object_local(Vector3(0, 1, 0), player_input.look_angle.x)
+
+    player.local_model.rotate_object_local(Vector3(1, 0, 0), player_input.look_angle.y)
+
+    player.local_model.rotation.x = clamp(player.local_model.rotation.x, -1.57, 1.57)
+    player.local_model.rotation.z = 0
+    player.local_model.rotation.y = 0
 
     if player.is_on_floor():
         var input_dir: Vector2 = player_input.direction

@@ -35,7 +35,7 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
     if event is InputEventMouseMotion:
         _mouse_rotation.y = event.relative.x * mouse_sensitivity
-        _mouse_rotation.x = - event.relative.y * mouse_sensitivity
+        _mouse_rotation.x = event.relative.y * mouse_sensitivity
 
     if event.is_action_pressed("escape"):
         _override_mouse = !_override_mouse

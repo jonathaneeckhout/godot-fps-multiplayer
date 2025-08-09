@@ -19,7 +19,7 @@ func _ready() -> void:
     if multiplayer.is_server():
         mode = Modes.SERVER
 
-        local_camera.queue_free()
+        local_camera.hide()
     else:
         if multiplayer.get_unique_id() == peer_id:
             mode = Modes.LOCAL
