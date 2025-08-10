@@ -19,6 +19,9 @@ var _wheel_down: bool = false
 # Buffer to store all inputs received from the client
 var input_buffer: Array[Dictionary] = []
 
+# TODO: optimize this, don't use 2 different buffers
+var shot_buffer: Array[Dictionary] = []
+
 var player: Player = null
 
 func _ready() -> void:
@@ -59,6 +62,8 @@ func _physics_process(delta):
 
     jump = Input.is_action_just_pressed("jump")
 
+    fire = Input.is_action_pressed("fire")
+
     if _override_mouse:
         look_angle = Vector2.ZERO
     else:
@@ -72,13 +77,15 @@ func _physics_process(delta):
     _wheel_up = false
     _wheel_down = false
 
-    input_buffer.append({"ts": timestamp, "di": direction, "la": look_angle, "ju": jump})
+    input_buffer.append({"ts": timestamp, "di": direction, "la": look_angle, "ju": jump, "fi": fire})
 
-    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump)
+    shot_buffer.append({"ts": timestamp, "fi": fire})
+
+    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire)
 
 
 @rpc("call_remote", "any_peer", "reliable")
-func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool) -> void:
+func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> void:
     if not multiplayer.is_server():
         return
 
@@ -86,4 +93,6 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool) -> void:
     if player.peer_id != peer_id:
         return
 
-    input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju})
+    input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi})
+
+    shot_buffer.append({"ts": ts, "fi": fi})

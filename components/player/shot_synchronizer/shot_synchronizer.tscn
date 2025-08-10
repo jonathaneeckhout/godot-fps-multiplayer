@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dvpcu5205ssm4"]
+
+[ext_resource type="Script" uid="uid://nypl44c48wnt" path="res://components/player/shot_synchronizer/shot_synchronizer.gd" id="1_88hvb"]
+
+[node name="ShotSynchronizer" type="Node"]
+script = ExtResource("1_88hvb")

@@ -1,3 +1,5 @@
+## This node will make another node follow the head rotation. 
+## This is usefull as the head is only visible on the local player thus this component is needed for other players model.
 class_name FollowHead
 extends Node
 

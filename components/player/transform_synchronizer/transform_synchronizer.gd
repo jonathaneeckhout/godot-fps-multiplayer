@@ -1,4 +1,4 @@
-class_name PlayerSynchronizer
+class_name TransformSynchronizer
 extends Node
 
 @export var head: Node3D = null
