@@ -3,6 +3,9 @@ extends Node
 
 @export var mouse_sensitivity: float = 0.4
 
+## The amount of inputs buffered
+@export var inputs_buffered: int = 64
+
 var direction: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
 var jump: bool = false
@@ -62,7 +65,7 @@ func _physics_process(delta):
 
     jump = Input.is_action_just_pressed("jump")
 
-    fire = Input.is_action_pressed("fire")
+    fire = Input.is_action_just_pressed("fire")
 
     if _override_mouse:
         look_angle = Vector2.ZERO
@@ -83,6 +86,16 @@ func _physics_process(delta):
 
     _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire)
 
+func get_inputs(from: float, to: float) -> Array[Dictionary]:
+    var filtered_inputs: Array[Dictionary] = []
+
+    for input in input_buffer:
+        var ts: float = input["ts"]
+        # Don't take the from field as it would result in too many inputs (thus no ts >= from but ts > from)
+        if ts > from and ts <= to:
+            filtered_inputs.append(input)
+
+    return filtered_inputs
 
 @rpc("call_remote", "any_peer", "reliable")
 func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> void:
@@ -96,3 +109,6 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> voi
     input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi})
 
     shot_buffer.append({"ts": ts, "fi": fi})
+
+    if input_buffer.size() > inputs_buffered:
+        input_buffer.remove_at(0)

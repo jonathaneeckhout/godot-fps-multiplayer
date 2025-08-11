@@ -45,10 +45,12 @@ func _physics_process(delta: float) -> void:
 
 
 func server_physics_process(delta: float) -> void:
-    if player_input.input_buffer.is_empty():
+    var inputs: Array[Dictionary] = player_input.get_inputs(last_timestamp, Connection.clock_synchronizer.get_time())
+
+    if inputs.is_empty():
         return
 
-    for input in player_input.input_buffer:
+    for input in inputs:
         player.rotate_object_local(Vector3(0, 1, 0), input["la"].x)
 
         head.rotate_object_local(Vector3(1, 0, 0), input["la"].y)
@@ -74,9 +76,7 @@ func server_physics_process(delta: float) -> void:
 
         player.move_and_slide()
 
-    last_timestamp = player_input.input_buffer[-1]["ts"]
-
-    player_input.input_buffer.clear()
+    last_timestamp = inputs[-1]["ts"]
 
     _sync_trans.rpc(last_timestamp, player.transform, head.rotation)
 
@@ -96,11 +96,10 @@ func local_client_sync_translation() -> void:
 
     if position_buffer[0]["ts"] == last_sync_timestamp:
         if position_buffer[0]["tf"] != last_sync_transform:
+            print("Exptected {0} but got {1}".format([position_buffer[0]["tf"], last_sync_transform]))
             player.transform = last_sync_transform
 
             #TODO: reapply inputs
-        else:
-            player_input.input_buffer.clear()
 
 
 func local_client_process_input(delta: float) -> void:
@@ -126,8 +125,6 @@ func local_client_process_input(delta: float) -> void:
         player.velocity.y -= gravity * delta
 
     player.move_and_slide()
-
-    player_input.input_buffer.clear()
 
     position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
 

@@ -56,7 +56,7 @@ func fire() -> void:
 
     fired.emit(target)
 
-    print("{0} side hit: {1}".format([multiplayer.get_unique_id(), hit.collider]))
+    print("{0} side hit: {1}".format([multiplayer.get_unique_id(), target]))
 
 
 func detect_hit() -> Dictionary:
