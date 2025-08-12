@@ -4,7 +4,7 @@ extends Node
 @export var mouse_sensitivity: float = 0.4
 
 ## The amount of inputs buffered
-@export var inputs_buffered: int = 64
+@export var input_buffer_size: int = 64
 
 var direction: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
@@ -104,5 +104,5 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> voi
 
     input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi})
 
-    if input_buffer.size() > inputs_buffered:
+    if input_buffer.size() > input_buffer_size:
         input_buffer.remove_at(0)

@@ -8,17 +8,23 @@ signal fired(target: Node3D)
 
 var player: Player = null
 var player_input: PlayerInput = null
+var transform_synchronizer: TransformSynchronizer = null
 
 var last_timestamp: float = 0.0
 
 var hit_buffer: Array[Dictionary] = []
 
 func _ready() -> void:
+    assert(Connection.players != null, "Make sure to register the Node storing the players. This is usually done by the player_spawner")
+
     player = get_parent()
     assert(player != null)
 
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
+
+    transform_synchronizer = player.get_node_or_null("TransformSynchronizer")
+    assert(transform_synchronizer != null, "TransformSynchronizer not found")
 
     assert(aim_point != null, "Please set aim point")
 
@@ -32,21 +38,58 @@ func _physics_process(delta: float) -> void:
             other_client_physics_process(delta)
 
 func server_physics_process(_delta: float) -> void:
-    var inputs: Array[Dictionary] = player_input.get_inputs(last_timestamp, Connection.clock_synchronizer.get_time())
+    for hit: Dictionary in hit_buffer:
+        var target_player: Player = Connection.players.get_node_or_null(hit["ta"])
+        if target_player == null:
+            continue
 
-    if inputs.is_empty():
-        return
-    
-    for input in inputs:
-        if input["fi"]:
-            fire()
+        var target_player_transform_synchronizer: TransformSynchronizer = target_player.get_node_or_null("TransformSynchronizer")
+        assert(target_player_transform_synchronizer, "TransformSynchronizer not found")
 
-    last_timestamp = inputs[-1]["ts"]
+        var player_transform: Transform3D = player.transform
+
+        player.transform = transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
+
+        transform_synchronizer.update_physics()
+
+        var target_player_transform: Transform3D = target_player.transform
+
+        target_player.transform = target_player_transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
+
+        target_player_transform_synchronizer.update_physics()
+
+        var is_hit: Dictionary = detect_hit()
+
+        # Make sure to reset transform
+        player.transform = player_transform
+        target_player.transform = target_player_transform
+
+        if is_hit.is_empty():
+            continue
+
+        if is_hit.collider.name == hit["ta"]:
+            hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ta"])
+
+
+    hit_buffer.clear()
 
 
 func local_client_physics_process(_delta: float) -> void:
-    if player_input.fire:
-        fire()
+    if not player_input.fire:
+        return
+
+    var hit: Dictionary = detect_hit()
+
+    var target: Node3D = null
+
+    if not hit.is_empty():
+        target = hit.collider
+
+        hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), target.name)
+
+    fired.emit(target)
+
+    print("Detected hit on: {0}".format([target]))
 
 
 func other_client_physics_process(_delta: float) -> void:
@@ -61,8 +104,6 @@ func fire() -> void:
         target = hit.collider
 
     fired.emit(target)
-
-    print("{0} side hit: {1}".format([multiplayer.get_unique_id(), target]))
 
 
 func detect_hit() -> Dictionary:
@@ -88,4 +129,8 @@ func hit_detected(timestamp: float, target: String) -> void:
     if player.peer_id != peer_id:
         return
 
-    hit_buffer.append({"ts": timestamp, "ta": target})
+    hit_buffer.append({"ts": timestamp, "id": peer_id, "ta": target})
+
+@rpc("call_remote", "authority", "reliable")
+func hit_comfirmed(timestamp: float, target: String) -> void:
+    print("Confirmed hit on: {0}".format([target]))

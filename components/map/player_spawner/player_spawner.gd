@@ -19,6 +19,8 @@ func _ready() -> void:
     Connection.game_server.user_connected.connect(_on_user_connected)
     Connection.game_server.user_connected.connect(_on_user_disconnected)
 
+    Connection.players = players_node
+
 # Server side
 func _on_user_connected(peer_id: int, username: String) -> void:
     add_player(peer_id, username)

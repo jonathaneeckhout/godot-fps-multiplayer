@@ -13,12 +13,10 @@ var last_sync_transform: Transform3D
 var last_head_rotation: Vector3 = Vector3.ZERO
 
 var transform_buffer: Array[Dictionary] = []
-var transform_buffer_size: int = 20
+var transform_buffer_size: int = 64
 
 var interpolation_offset: float = 0.1
-
-var gravity = ProjectSettings.get_setting(&"physics/3d/default_gravity") * 2
-
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
 var position_buffer: Array[Dictionary] = []
 
 func _ready() -> void:
@@ -44,48 +42,35 @@ func _physics_process(delta: float) -> void:
             other_client_physics_process(delta)
 
 
-func server_physics_process(delta: float) -> void:
+func server_physics_process(_delta: float) -> void:
     var inputs: Array[Dictionary] = player_input.get_inputs(last_timestamp, Connection.clock_synchronizer.get_time())
-
     if inputs.is_empty():
         return
 
     for input in inputs:
-        player.rotate_object_local(Vector3(0, 1, 0), input["la"].x)
+        apply_head_rotation(input["la"])
 
-        head.rotate_object_local(Vector3(1, 0, 0), input["la"].y)
+        update_physics()
 
-        head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
-        head.rotation.z = 0
-        head.rotation.y = 0
-
-        _force_update_is_on_floor()
-
-        if player.is_on_floor():
-            var input_dir: Vector2 = input["di"]
-
-            var direction: Vector3 = (player.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-
-            player.velocity.x = direction.x * player.movement_speed
-            player.velocity.z = direction.z * player.movement_speed
-
-            if input["ju"]:
-                player.velocity.y = player.jump_force
-        else:
-            player.velocity.y -= gravity * delta
-
-        player.move_and_slide()
+        apply_movement_and_gravity(input["di"], input["ju"])
 
     last_timestamp = inputs[-1]["ts"]
 
     _sync_trans.rpc(last_timestamp, player.transform, head.rotation)
 
+    transform_buffer.append({"ts": Connection.clock_synchronizer.get_time(), "tf": player.transform, "hr": player.head.rotation})
 
-func local_client_physics_process(delta: float) -> void:
+    if transform_buffer.size() > transform_buffer_size:
+        transform_buffer.remove_at(0)
+
+func local_client_physics_process(_delta: float) -> void:
     local_client_sync_translation()
 
-    local_client_process_input(delta)
+    apply_head_rotation(player_input.look_angle)
 
+    apply_movement_and_gravity(player_input.direction, player_input.jump)
+
+    position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
 
 func local_client_sync_translation() -> void:
     if position_buffer.is_empty():
@@ -96,38 +81,10 @@ func local_client_sync_translation() -> void:
 
     if position_buffer[0]["ts"] == last_sync_timestamp:
         if position_buffer[0]["tf"] != last_sync_transform:
-            print("Exptected {0} but got {1}".format([position_buffer[0]["tf"], last_sync_transform]))
+            print("Expected {0} but got {1}".format([position_buffer[0]["tf"], last_sync_transform]))
             player.transform = last_sync_transform
 
             #TODO: reapply inputs
-
-
-func local_client_process_input(delta: float) -> void:
-    player.rotate_object_local(Vector3(0, 1, 0), player_input.look_angle.x)
-
-    head.rotate_object_local(Vector3(1, 0, 0), player_input.look_angle.y)
-
-    head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
-    head.rotation.z = 0
-    head.rotation.y = 0
-
-    if player.is_on_floor():
-        var input_dir: Vector2 = player_input.direction
-
-        var direction: Vector3 = (player.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
-
-        player.velocity.x = direction.x * player.movement_speed
-        player.velocity.z = direction.z * player.movement_speed
-
-        if player_input.jump:
-            player.velocity.y = player.jump_force
-    else:
-        player.velocity.y -= gravity * delta
-
-    player.move_and_slide()
-
-    position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
-
 
 func other_client_physics_process(_delta: float) -> void:
     if transform_buffer.size() < 2:
@@ -144,18 +101,35 @@ func other_client_physics_process(_delta: float) -> void:
                 head.rotation = transform_buffer[i]["hr"].lerp(transform_buffer[i + 1]["hr"], t)
                 break
 
+func apply_head_rotation(look_angle: Vector2) -> void:
+    player.rotate_object_local(Vector3(0, 1, 0), look_angle.x)
+    head.rotate_object_local(Vector3(1, 0, 0), look_angle.y)
+
+    head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
+    head.rotation.z = 0
+    head.rotation.y = 0
+
+func apply_movement_and_gravity(input_dir: Vector2, jump: bool) -> void:
+    if player.is_on_floor():
+        var direction: Vector3 = (player.transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+        player.velocity.x = direction.x * player.movement_speed
+        player.velocity.z = direction.z * player.movement_speed
+        if jump:
+            player.velocity.y = player.jump_force
+    else:
+        player.velocity.y -= gravity * get_physics_process_delta_time()
+
+    player.move_and_slide()
 
 func perform_physics_step(fraction: float):
     player.velocity /= fraction
-    # Perform the actual move and collision checking
+
     player.move_and_slide()
 
     player.velocity *= fraction
 
-
 @rpc("call_remote", "authority", "unreliable")
 func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
-    # Ignore older updates
     if ts < last_sync_timestamp:
         return
 
@@ -169,9 +143,24 @@ func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
         if transform_buffer.size() > transform_buffer_size:
             transform_buffer.remove_at(0)
 
-
-func _force_update_is_on_floor():
+func update_physics():
     var old_velocity = player.velocity
     player.velocity = Vector3.ZERO
     player.move_and_slide()
     player.velocity = old_velocity
+
+
+func get_closest_transform(target_ts: float) -> Dictionary:
+    if transform_buffer.is_empty():
+        return {"ts": Connection.clock_synchronizer.get_time(), "tf": player.transform, "hr": player.head.rotation}
+
+    var closest_entry = transform_buffer[0]
+    var min_diff = abs(transform_buffer[0]["ts"] - target_ts)
+
+    for entry in transform_buffer:
+        var current_diff = abs(entry["ts"] - target_ts)
+        if current_diff < min_diff:
+            min_diff = current_diff
+            closest_entry = entry
+
+    return closest_entry
