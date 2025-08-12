@@ -9,6 +9,10 @@ signal fired(target: Node3D)
 var player: Player = null
 var player_input: PlayerInput = null
 
+var last_timestamp: float = 0.0
+
+var hit_buffer: Array[Dictionary] = []
+
 func _ready() -> void:
     player = get_parent()
     assert(player != null)
@@ -28,20 +32,22 @@ func _physics_process(delta: float) -> void:
             other_client_physics_process(delta)
 
 func server_physics_process(_delta: float) -> void:
-    if player_input.shot_buffer.is_empty():
+    var inputs: Array[Dictionary] = player_input.get_inputs(last_timestamp, Connection.clock_synchronizer.get_time())
+
+    if inputs.is_empty():
         return
     
-    for input in player_input.shot_buffer:
+    for input in inputs:
         if input["fi"]:
             fire()
 
-    player_input.shot_buffer.clear()
+    last_timestamp = inputs[-1]["ts"]
+
 
 func local_client_physics_process(_delta: float) -> void:
     if player_input.fire:
         fire()
 
-    player_input.shot_buffer.clear()
 
 func other_client_physics_process(_delta: float) -> void:
     pass
@@ -70,3 +76,16 @@ func detect_hit() -> Dictionary:
     )
 
     return space.intersect_ray(query)
+
+@rpc("call_remote", "any_peer", "reliable")
+func hit_detected(timestamp: float, target: String) -> void:
+    # This code should only run on server
+    if not multiplayer.is_server():
+        return
+
+    # This code is only allowed by the owner of this player
+    var peer_id = multiplayer.get_remote_sender_id()
+    if player.peer_id != peer_id:
+        return
+
+    hit_buffer.append({"ts": timestamp, "ta": target})

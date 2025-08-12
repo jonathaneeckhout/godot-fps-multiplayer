@@ -22,8 +22,6 @@ var _wheel_down: bool = false
 # Buffer to store all inputs received from the client
 var input_buffer: Array[Dictionary] = []
 
-# TODO: optimize this, don't use 2 different buffers
-var shot_buffer: Array[Dictionary] = []
 
 var player: Player = null
 
@@ -82,8 +80,6 @@ func _physics_process(delta):
 
     input_buffer.append({"ts": timestamp, "di": direction, "la": look_angle, "ju": jump, "fi": fire})
 
-    shot_buffer.append({"ts": timestamp, "fi": fire})
-
     _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire)
 
 func get_inputs(from: float, to: float) -> Array[Dictionary]:
@@ -107,8 +103,6 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> voi
         return
 
     input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi})
-
-    shot_buffer.append({"ts": ts, "fi": fi})
 
     if input_buffer.size() > inputs_buffered:
         input_buffer.remove_at(0)
