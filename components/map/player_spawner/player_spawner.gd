@@ -19,8 +19,6 @@ func _ready() -> void:
     Connection.game_server.user_connected.connect(_on_user_connected)
     Connection.game_server.user_connected.connect(_on_user_disconnected)
 
-    Connection.players = players_node
-
 # Server side
 func _on_user_connected(peer_id: int, username: String) -> void:
     add_player(peer_id, username)
@@ -34,29 +32,18 @@ func _on_user_disconnected(peer_id: int, username: String) -> void:
 func add_player(peer_id: int, username: String) -> void:
     var player: Player = player_scene.instantiate()
     player.name = username
-    player.peer_id = peer_id
     player.position = spawn_location_picker.get_spawn_location()
+
+    var network_node: NetworkNode = player.get_node_or_null("NetworkNode")
+    assert(network_node != null, "Missing NetworkNode")
+
+    network_node.peer_id = peer_id
+    network_node.network_id = Connection.get_unique_network_id()
+
     players_node.add_child(player)
 
-    _add_player.rpc(peer_id, username, player.position)
+    # Connection.add_network_node(player.network_id, player)
 
 # Removing player on server side
 func remove_player(peer_id: int, username: String) -> void:
-    pass
-
-@rpc("call_remote", "authority", "reliable")
-func _add_player(peer_id: int, username: String, position: Vector3) -> void:
-    if multiplayer.is_server():
-        return
-
-    var player: Player = player_scene.instantiate()
-    player.name = username
-    player.username = username
-    player.peer_id = peer_id
-    player.position = position
-    players_node.add_child(player)
-
-
-@rpc("call_remote", "authority", "reliable")
-func _remove_player(peer_id: int, username: String) -> void:
     pass

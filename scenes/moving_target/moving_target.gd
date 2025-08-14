@@ -1,1 +1,2 @@
+class_name MovingTarget
 extends StaticBody3D

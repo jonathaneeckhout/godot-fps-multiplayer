@@ -7,6 +7,7 @@ signal fired(target: Node3D)
 @export var aim_point: Node3D = null
 
 var player: Player = null
+var network_node: NetworkNode = null
 var player_input: PlayerInput = null
 var transform_synchronizer: TransformSynchronizer = null
 
@@ -15,10 +16,11 @@ var last_timestamp: float = 0.0
 var hit_buffer: Array[Dictionary] = []
 
 func _ready() -> void:
-    assert(Connection.players != null, "Make sure to register the Node storing the players. This is usually done by the player_spawner")
-
     player = get_parent()
     assert(player != null)
+
+    network_node = player.get_node_or_null("NetworkNode")
+    assert(network_node != null, "Missing NetworkNode")
 
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
@@ -29,22 +31,22 @@ func _ready() -> void:
     assert(aim_point != null, "Please set aim point")
 
 func _physics_process(delta: float) -> void:
-    match player.mode:
-        Player.Modes.SERVER:
+    match network_node.mode:
+        NetworkNode.Modes.SERVER:
             server_physics_process(delta)
-        Player.Modes.LOCAL:
+        NetworkNode.Modes.LOCAL:
             local_client_physics_process(delta)
-        Player.Modes.OTHER:
+        NetworkNode.Modes.OTHER:
             other_client_physics_process(delta)
 
 func server_physics_process(_delta: float) -> void:
     for hit: Dictionary in hit_buffer:
-        var target_player: Player = Connection.players.get_node_or_null(hit["ta"])
-        if target_player == null:
+        var target: Player = Connection.get_network_node(hit["ni"])
+        if target == null:
             continue
 
-        var target_player_transform_synchronizer: TransformSynchronizer = target_player.get_node_or_null("TransformSynchronizer")
-        assert(target_player_transform_synchronizer, "TransformSynchronizer not found")
+        var target_transform_synchronizer: TransformSynchronizer = target.get_node_or_null("TransformSynchronizer")
+        assert(target_transform_synchronizer, "TransformSynchronizer not found")
 
         var player_transform: Transform3D = player.transform
 
@@ -52,23 +54,23 @@ func server_physics_process(_delta: float) -> void:
 
         transform_synchronizer.update_physics()
 
-        var target_player_transform: Transform3D = target_player.transform
+        var target_transform: Transform3D = target.transform
 
-        target_player.transform = target_player_transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
+        target.transform = target_transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
 
-        target_player_transform_synchronizer.update_physics()
+        target_transform_synchronizer.update_physics()
 
         var is_hit: Dictionary = detect_hit()
 
         # Make sure to reset transform
         player.transform = player_transform
-        target_player.transform = target_player_transform
+        target.transform = target_transform
 
         if is_hit.is_empty():
             continue
 
-        if is_hit.collider.name == hit["ta"]:
-            hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ta"])
+        if is_hit.collider.get("network_id") == hit["ni"]:
+            hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ni"])
 
 
     hit_buffer.clear()
@@ -79,17 +81,23 @@ func local_client_physics_process(_delta: float) -> void:
         return
 
     var hit: Dictionary = detect_hit()
+    if hit.is_empty():
+        fired.emit(null)
+        return
 
-    var target: Node3D = null
-
-    if not hit.is_empty():
-        target = hit.collider
-
-        hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), target.name)
+    var target: Node3D = hit["collider"]
 
     fired.emit(target)
 
-    print("Detected hit on: {0}".format([target]))
+    # Only detect hits for network objects
+    if target.get("network_id") == null:
+        return
+
+    var network_id: int = target.get("network_id")
+
+    hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), network_id)
+
+    print("Detected hit on: {0}".format([network_id]))
 
 
 func other_client_physics_process(_delta: float) -> void:
@@ -119,18 +127,18 @@ func detect_hit() -> Dictionary:
     return space.intersect_ray(query)
 
 @rpc("call_remote", "any_peer", "reliable")
-func hit_detected(timestamp: float, target: String) -> void:
+func hit_detected(timestamp: float, network_id: int) -> void:
     # This code should only run on server
     if not multiplayer.is_server():
         return
 
     # This code is only allowed by the owner of this player
     var peer_id = multiplayer.get_remote_sender_id()
-    if player.peer_id != peer_id:
+    if network_node.peer_id != peer_id:
         return
 
-    hit_buffer.append({"ts": timestamp, "id": peer_id, "ta": target})
+    hit_buffer.append({"ts": timestamp, "id": peer_id, "ni": network_id})
 
 @rpc("call_remote", "authority", "reliable")
-func hit_comfirmed(timestamp: float, target: String) -> void:
-    print("Confirmed hit on: {0}".format([target]))
+func hit_comfirmed(_timestamp: float, network_id: int) -> void:
+    print("Confirmed hit on: {0}".format([network_id]))

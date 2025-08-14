@@ -7,16 +7,20 @@ extends Node
 @export var replica: Node3D = null
 
 var player: Player = null
+var network_node: NetworkNode = null
 
 func _ready() -> void:
     player = get_parent()
     assert(player != null, "Player not found")
 
+    network_node = player.get_node_or_null("NetworkNode")
+    assert(network_node != null, "Missing NetworkNode")
+
     assert(head != null, "Please set head")
     assert(replica != null, "Please set replica")
 
-    if player.peer_id == multiplayer.get_unique_id():
+    if network_node.mode == NetworkNode.Modes.LOCAL:
         set_physics_process(false)
-    
+
 func _physics_process(_delta: float) -> void:
     replica.rotation = head.rotation

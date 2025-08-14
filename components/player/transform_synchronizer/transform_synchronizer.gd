@@ -4,6 +4,7 @@ extends Node
 @export var head: Node3D = null
 
 var player: Player = null
+var network_node: NetworkNode = null
 var player_input: PlayerInput = null
 
 var last_timestamp: float = 0.0
@@ -23,6 +24,9 @@ func _ready() -> void:
     player = get_parent()
     assert(player != null)
 
+    network_node = player.get_node_or_null("NetworkNode")
+    assert(network_node != null, "Missing NetworkNode")
+
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
 
@@ -33,12 +37,12 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-    match player.mode:
-        Player.Modes.SERVER:
+    match network_node.mode:
+        NetworkNode.Modes.SERVER:
             server_physics_process(delta)
-        Player.Modes.LOCAL:
+        NetworkNode.Modes.LOCAL:
             local_client_physics_process(delta)
-        Player.Modes.OTHER:
+        NetworkNode.Modes.OTHER:
             other_client_physics_process(delta)
 
 
@@ -137,7 +141,7 @@ func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
     last_sync_transform = tf
     last_head_rotation = hr
 
-    if player.mode == Player.Modes.OTHER:
+    if network_node.mode == NetworkNode.Modes.OTHER:
         transform_buffer.append({"ts": ts, "tf": tf, "hr": hr})
 
         if transform_buffer.size() > transform_buffer_size:
