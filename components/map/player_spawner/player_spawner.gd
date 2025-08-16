@@ -38,7 +38,6 @@ func add_player(peer_id: int, username: String) -> void:
     assert(network_node != null, "Missing NetworkNode")
 
     network_node.peer_id = peer_id
-    network_node.network_id = Connection.get_unique_network_id()
 
     players_node.add_child(player)
 

@@ -13,6 +13,10 @@ var mode: Modes = Modes.SERVER
 
 var multiplayer_synchronizer: MultiplayerSynchronizer
 
+func _init() -> void:
+    network_id = Connection.get_unique_network_id()
+
+
 func _ready() -> void:
     parent = get_parent()
     assert(parent != null, "Missing parent")

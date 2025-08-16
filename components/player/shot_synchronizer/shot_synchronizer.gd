@@ -89,15 +89,14 @@ func local_client_physics_process(_delta: float) -> void:
 
     fired.emit(target)
 
+    var target_network_node: NetworkNode = target.get_node_or_null("NetworkNode")
     # Only detect hits for network objects
-    if target.get("network_id") == null:
+    if target_network_node == null:
         return
 
-    var network_id: int = target.get("network_id")
+    hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), target_network_node.network_id)
 
-    hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), network_id)
-
-    print("Detected hit on: {0}".format([network_id]))
+    print("Detected hit on: {0}".format([target_network_node.network_id]))
 
 
 func other_client_physics_process(_delta: float) -> void:
