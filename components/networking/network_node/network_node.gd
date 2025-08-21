@@ -16,6 +16,16 @@ var multiplayer_synchronizer: MultiplayerSynchronizer
 func _init() -> void:
     network_id = Connection.get_unique_network_id()
 
+func _enter_tree() -> void:
+    parent = get_parent()
+    assert(parent != null, "Missing parent")
+
+    Connection.add_network_node(network_id, parent)
+
+
+func _exit_tree() -> void:
+    Connection.remove_network_node(network_id)
+
 
 func _ready() -> void:
     parent = get_parent()

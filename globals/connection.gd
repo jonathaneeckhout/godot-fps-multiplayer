@@ -21,5 +21,8 @@ func get_unique_network_id() -> int:
 func add_network_node(network_id: int, node: Node3D) -> void:
     _network_nodes[network_id] = node
 
+func remove_network_node(network_id: int) -> bool:
+    return _network_nodes.erase(network_id)
+
 func get_network_node(network_id: int) -> Node3D:
     return _network_nodes.get(network_id)

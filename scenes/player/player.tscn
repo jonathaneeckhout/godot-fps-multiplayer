@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=25 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/player/transform_synchronizer/transform_synchronizer.tscn" id="3_lvxji"]
 [ext_resource type="PackedScene" uid="uid://vbp50deepeeh" path="res://components/player/follow_head/follow_head.tscn" id="4_lvxji"]
 [ext_resource type="PackedScene" uid="uid://dvpcu5205ssm4" path="res://components/player/shot_synchronizer/shot_synchronizer.tscn" id="4_p47bc"]
+[ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="7_0owmy"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
@@ -198,6 +199,9 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
 [node name="PlayerInput" parent="." instance=ExtResource("2_gmlin")]
+
+[node name="PropertyBuffer" parent="." instance=ExtResource("7_0owmy")]
+property_paths = Array[String]([":transform", "Head:rotation"])
 
 [node name="TransformSynchronizer" parent="." node_paths=PackedStringArray("head") instance=ExtResource("3_lvxji")]
 head = NodePath("../Head")

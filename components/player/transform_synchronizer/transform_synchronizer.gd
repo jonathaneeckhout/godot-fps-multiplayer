@@ -6,6 +6,7 @@ extends Node
 var player: Player = null
 var network_node: NetworkNode = null
 var player_input: PlayerInput = null
+var property_buffer: PropertyBuffer = null
 
 var last_timestamp: float = 0.0
 
@@ -29,6 +30,9 @@ func _ready() -> void:
 
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
+
+    property_buffer = player.get_node_or_null("PropertyBuffer")
+    assert(property_buffer != null, "PropertyBuffer not found")
 
     assert(head != null, "Please set head")
 
@@ -61,11 +65,6 @@ func server_physics_process(_delta: float) -> void:
     last_timestamp = inputs[-1]["ts"]
 
     _sync_trans.rpc(last_timestamp, player.transform, head.rotation)
-
-    transform_buffer.append({"ts": Connection.clock_synchronizer.get_time(), "tf": player.transform, "hr": player.head.rotation})
-
-    if transform_buffer.size() > transform_buffer_size:
-        transform_buffer.remove_at(0)
 
 func local_client_physics_process(_delta: float) -> void:
     local_client_sync_translation()

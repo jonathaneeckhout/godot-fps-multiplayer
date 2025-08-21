@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://mnr37o6va7hm"]
+[gd_scene load_steps=9 format=3 uid="uid://mnr37o6va7hm"]
 
 [ext_resource type="Script" uid="uid://87fs0ev4amdx" path="res://scenes/moving_target/moving_target.gd" id="1_ke1pb"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_x4ogj"]
+[ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="3_2ppaf"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_brhfe"]
 size = Vector3(0.05, 1.6, 0.05)
@@ -31,6 +32,9 @@ properties/2/replication_mode = 0
 script = ExtResource("1_ke1pb")
 
 [node name="NetworkNode" parent="." instance=ExtResource("2_x4ogj")]
+
+[node name="PropertyBuffer" parent="." instance=ExtResource("3_2ppaf")]
+property_paths = Array[String]([":transform"])
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)

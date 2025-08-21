@@ -9,7 +9,7 @@ signal fired(target: Node3D)
 var player: Player = null
 var network_node: NetworkNode = null
 var player_input: PlayerInput = null
-var transform_synchronizer: TransformSynchronizer = null
+var property_buffer: PropertyBuffer = null
 
 var last_timestamp: float = 0.0
 
@@ -25,8 +25,8 @@ func _ready() -> void:
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
 
-    transform_synchronizer = player.get_node_or_null("TransformSynchronizer")
-    assert(transform_synchronizer != null, "TransformSynchronizer not found")
+    property_buffer = player.get_node_or_null("PropertyBuffer")
+    assert(property_buffer != null, "PropertyBuffer not found")
 
     assert(aim_point != null, "Please set aim point")
 
@@ -41,24 +41,20 @@ func _physics_process(delta: float) -> void:
 
 func server_physics_process(_delta: float) -> void:
     for hit: Dictionary in hit_buffer:
-        var target: Player = Connection.get_network_node(hit["ni"])
+        var target: Node3D = Connection.get_network_node(hit["ni"])
         if target == null:
             continue
 
-        var target_transform_synchronizer: TransformSynchronizer = target.get_node_or_null("TransformSynchronizer")
-        assert(target_transform_synchronizer, "TransformSynchronizer not found")
+        var target_property_buffer: PropertyBuffer = target.get_node_or_null("PropertyBuffer")
+        assert(target_property_buffer, "PropertyBuffer not found")
 
         var player_transform: Transform3D = player.transform
 
-        player.transform = transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
-
-        transform_synchronizer.update_physics()
+        player.transform = property_buffer.get_closest_value(":transform", hit["ts"])
 
         var target_transform: Transform3D = target.transform
 
-        target.transform = target_transform_synchronizer.get_closest_transform(hit["ts"])["tf"]
-
-        target_transform_synchronizer.update_physics()
+        target.transform = target_property_buffer.get_closest_value(":transform", hit["ts"])
 
         var is_hit: Dictionary = detect_hit()
 
@@ -69,9 +65,11 @@ func server_physics_process(_delta: float) -> void:
         if is_hit.is_empty():
             continue
 
-        if is_hit.collider.get("network_id") == hit["ni"]:
-            hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ni"])
+        var collider: Node3D = is_hit.collider as Node3D
+        var collider_network_node: NetworkNode = collider.get_node_or_null("NetworkNode")
 
+        if collider_network_node != null and collider_network_node.network_id == hit["ni"]:
+            hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ni"])
 
     hit_buffer.clear()
 

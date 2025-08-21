@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cma5whogn6iyv"]
+
+[ext_resource type="Script" uid="uid://bckb313oldj4y" path="res://components/networking/property_buffer/property_buffer.gd" id="1_ostwi"]
+
+[node name="PropertyBuffer" type="Node"]
+script = ExtResource("1_ostwi")
