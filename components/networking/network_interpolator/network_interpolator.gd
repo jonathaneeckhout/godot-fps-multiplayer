@@ -1,0 +1,2 @@
+class_name NetworkInterpolator
+extends Node

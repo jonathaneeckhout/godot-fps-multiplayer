@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cautmgcgdliec"]
+
+[ext_resource type="Script" uid="uid://o0ipruhw7whk" path="res://components/networking/network_interpolator/network_interpolator.gd" id="1_ar58r"]
+
+[node name="NetworkInterpolator" type="Node"]
+script = ExtResource("1_ar58r")
