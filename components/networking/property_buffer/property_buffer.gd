@@ -28,7 +28,7 @@ func init_buffer() -> void:
 
 func _physics_process(_delta: float) -> void:
     var timestamp: float = Connection.clock_synchronizer.get_time()
-    
+
     for property_path in buffer:
         buffer_property(timestamp, property_path)
 
@@ -37,7 +37,7 @@ func buffer_property(timestamp: float, property_path: String) -> void:
     var property_buffer: Array = buffer[property_path]
 
     var property_values = parent.get_node_and_resource(property_path)
-    
+
     var property_node: Node = property_values[0]
     assert(property_node != null, "Can't find [0]".format([property_path]))
 

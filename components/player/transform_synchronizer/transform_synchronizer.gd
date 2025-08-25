@@ -6,16 +6,12 @@ extends Node
 var player: Player = null
 var network_node: NetworkNode = null
 var player_input: PlayerInput = null
-var property_buffer: PropertyBuffer = null
 
 var last_timestamp: float = 0.0
 
 var last_sync_timestamp: float = 0.0
 var last_sync_transform: Transform3D
 var last_head_rotation: Vector3 = Vector3.ZERO
-
-var transform_buffer: Array[Dictionary] = []
-var transform_buffer_size: int = 64
 
 var interpolation_offset: float = 0.1
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity") * 2
@@ -31,9 +27,6 @@ func _ready() -> void:
     player_input = player.get_node_or_null("PlayerInput")
     assert(player_input != null, "PlayerInput not found")
 
-    property_buffer = player.get_node_or_null("PropertyBuffer")
-    assert(property_buffer != null, "PropertyBuffer not found")
-
     assert(head != null, "Please set head")
 
     last_sync_timestamp = Connection.clock_synchronizer.get_time()
@@ -46,8 +39,6 @@ func _physics_process(delta: float) -> void:
             server_physics_process(delta)
         NetworkNode.Modes.LOCAL:
             local_client_physics_process(delta)
-        NetworkNode.Modes.OTHER:
-            other_client_physics_process(delta)
 
 
 func server_physics_process(_delta: float) -> void:
@@ -64,7 +55,7 @@ func server_physics_process(_delta: float) -> void:
 
     last_timestamp = inputs[-1]["ts"]
 
-    _sync_trans.rpc(last_timestamp, player.transform, head.rotation)
+    _sync_trans.rpc_id(network_node.peer_id, last_timestamp, player.transform, head.rotation)
 
 func local_client_physics_process(_delta: float) -> void:
     local_client_sync_translation()
@@ -89,20 +80,6 @@ func local_client_sync_translation() -> void:
 
             #TODO: reapply inputs
 
-func other_client_physics_process(_delta: float) -> void:
-    if transform_buffer.size() < 2:
-        player.transform = last_sync_transform
-        head.rotation = last_head_rotation
-    else:
-        var current_time: float = Connection.clock_synchronizer.get_time()
-        var render_time: float = current_time - interpolation_offset
-
-        for i in range(transform_buffer.size() - 1):
-            if transform_buffer[i]["ts"] <= render_time and transform_buffer[i + 1]["ts"] >= render_time:
-                var t: float = (render_time - transform_buffer[i]["ts"]) / (transform_buffer[i + 1]["ts"] - transform_buffer[i]["ts"])
-                player.transform = transform_buffer[i]["tf"].interpolate_with(transform_buffer[i + 1]["tf"], t)
-                head.rotation = transform_buffer[i]["hr"].lerp(transform_buffer[i + 1]["hr"], t)
-                break
 
 func apply_head_rotation(look_angle: Vector2) -> void:
     player.rotate_object_local(Vector3(0, 1, 0), look_angle.x)
@@ -140,30 +117,9 @@ func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
     last_sync_transform = tf
     last_head_rotation = hr
 
-    if network_node.mode == NetworkNode.Modes.OTHER:
-        transform_buffer.append({"ts": ts, "tf": tf, "hr": hr})
-
-        if transform_buffer.size() > transform_buffer_size:
-            transform_buffer.remove_at(0)
 
 func update_physics():
     var old_velocity = player.velocity
     player.velocity = Vector3.ZERO
     player.move_and_slide()
     player.velocity = old_velocity
-
-
-func get_closest_transform(target_ts: float) -> Dictionary:
-    if transform_buffer.is_empty():
-        return {"ts": Connection.clock_synchronizer.get_time(), "tf": player.transform, "hr": player.head.rotation}
-
-    var closest_entry = transform_buffer[0]
-    var min_diff = abs(transform_buffer[0]["ts"] - target_ts)
-
-    for entry in transform_buffer:
-        var current_diff = abs(entry["ts"] - target_ts)
-        if current_diff < min_diff:
-            min_diff = current_diff
-            closest_entry = entry
-
-    return closest_entry
