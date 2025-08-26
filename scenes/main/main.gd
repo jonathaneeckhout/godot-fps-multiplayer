@@ -16,6 +16,9 @@ func start_server() -> void:
 
     Connection.game_server.create_server()
 
+    get_tree().root.mode = Window.MODE_MINIMIZED
+
+
 func start_client() -> void:
     get_window().title = "GFM (Client)"
 

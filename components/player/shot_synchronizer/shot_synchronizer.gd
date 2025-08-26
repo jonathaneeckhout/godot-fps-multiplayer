@@ -71,6 +71,11 @@ func server_physics_process(_delta: float) -> void:
         if collider_network_node != null and collider_network_node.network_id == hit["ni"]:
             hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ni"])
 
+            # TODO: implement gun specific behavior
+            var collider_health_synchronizer: HealthSynchronizer = collider.get_node_or_null("HealthSynchronizer")
+            if collider_health_synchronizer != null:
+                collider_health_synchronizer.hurt(10)
+
     hit_buffer.clear()
 
 

@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://bxpq3pehfwvmq"]
+
+[ext_resource type="Script" uid="uid://beh3bbl7p1uxm" path="res://components/other_health_bar/other_health_bar.gd" id="1_djjr1"]
+[ext_resource type="Texture2D" uid="uid://7c0d2qjbf8yg" path="res://assets/healthbar/scaled/BarGlass.png" id="2_7j3u0"]
+[ext_resource type="Texture2D" uid="uid://dguocpjsk6147" path="res://assets/healthbar/scaled/GreenBar.png" id="3_te6u5"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_d4vop"]
+viewport_path = NodePath("SubViewport")
+
+[node name="OtherHealthBar" type="Sprite3D"]
+billboard = 1
+texture = SubResource("ViewportTexture_d4vop")
+script = ExtResource("1_djjr1")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(307, 307)
+
+[node name="ProgressBar" type="TextureProgressBar" parent="SubViewport"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -77.0
+offset_top = -77.0
+offset_right = 77.0
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+value = 100.0
+texture_over = ExtResource("2_7j3u0")
+texture_progress = ExtResource("3_te6u5")
