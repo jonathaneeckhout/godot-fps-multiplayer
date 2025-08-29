@@ -68,5 +68,21 @@ func get_closest_value(property_path: String, timestamp: float) -> Variant:
 
     return closest_entry["pv"]
 
+func get_interpolated_transform(property_path: String, timestamp: float) -> Transform3D:
+    if not buffer.has(property_path) or buffer[property_path].is_empty():
+        return Transform3D.IDENTITY
+    var property_buffer = buffer[property_path]
+    # Find the two entries to interpolate between
+    var lower = property_buffer[0]
+    var upper = property_buffer[-1]
+    for i in range(property_buffer.size() - 1):
+        if property_buffer[i]["ts"] <= timestamp and property_buffer[i + 1]["ts"] >= timestamp:
+            lower = property_buffer[i]
+            upper = property_buffer[i + 1]
+            break
+    # Linear interpolation for Transform3D
+    var t = (timestamp - lower["ts"]) / (upper["ts"] - lower["ts"])
+    return lower["pv"].interpolate_with(upper["pv"], t)
+
 func _get_empty_value() -> Dictionary:
     return {"ts": Connection.clock_synchronizer.get_time(), "pv": null}

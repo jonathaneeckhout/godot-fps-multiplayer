@@ -50,11 +50,35 @@ func server_physics_process(_delta: float) -> void:
 
         var player_transform: Transform3D = player.transform
 
-        player.transform = property_buffer.get_closest_value(":transform", hit["ts"])
+        player.transform = property_buffer.get_interpolated_transform(":transform", hit["ts"])
 
         var target_transform: Transform3D = target.transform
 
-        target.transform = target_property_buffer.get_closest_value(":transform", hit["ts"])
+        target.transform = target_property_buffer.get_interpolated_transform(":transform", hit["ts"] - 0.1)
+
+        print("========== Server =========")
+        print("ts {0}".format([hit["ts"]]))
+        print("position {0}".format([player.position]))
+        print("rotation {0}".format([player.rotation]))
+        print("head {0}".format([player.head.rotation]))
+        print("target {0}".format([hit["ni"]]))
+        print("target position {0}".format([target.position]))
+
+        print("target render time {0}".format([hit["ts"] - 0.1]))
+
+        var test = target_property_buffer.buffer[":transform"]
+
+        for value in test:
+            if value["pv"].origin == hit["tp"]:
+                print("---------- Buffer ----------")
+                print("Timestamp of target position {0}".format([value["ts"]]))
+                print("diff {0}".format([value["ts"] - (hit["ts"] - 0.1)]))
+                # print("Target had position {0} at ts {1}".format([hit["tp"]], value["ts"]))
+            # print(value["pv"].origin)
+
+        print("==========================")
+
+        target.force_update_transform()
 
         var is_hit: Dictionary = detect_hit()
 
@@ -65,11 +89,19 @@ func server_physics_process(_delta: float) -> void:
         if is_hit.is_empty():
             continue
 
+        print("hit")
+        print(is_hit)
+
+
         var collider: Node3D = is_hit.collider as Node3D
         var collider_network_node: NetworkNode = collider.get_node_or_null("NetworkNode")
 
+        print("HIER")
+        print(collider_network_node)
+
         if collider_network_node != null and collider_network_node.network_id == hit["ni"]:
             hit_comfirmed.rpc_id(hit["id"], hit["ts"], hit["ni"])
+
 
             # TODO: implement gun specific behavior
             var collider_health_synchronizer: HealthSynchronizer = collider.get_node_or_null("HealthSynchronizer")
@@ -97,9 +129,25 @@ func local_client_physics_process(_delta: float) -> void:
     if target_network_node == null:
         return
 
-    hit_detected.rpc_id(1, Connection.clock_synchronizer.get_time(), target_network_node.network_id)
+    var timestamp: float = Connection.clock_synchronizer.get_time()
 
-    print("Detected hit on: {0}".format([target_network_node.network_id]))
+    var network_interpolator: NetworkInterpolator = target.get_node_or_null("NetworkInterpolator")
+
+    # print("Client detected hit on {0} at {1} at time {2}".format([target_network_node.network_id, target.position, timestamp]))
+    print("========== Client =========")
+    print("ts {0}".format([timestamp]))
+    print("position {0}".format([player.position]))
+    print("rotation {0}".format([player.rotation]))
+    print("head {0}".format([player.head.rotation]))
+    print("target {0}".format([target_network_node.network_id]))
+    print("target position {0}".format([target.position]))
+    print("target render time {0}".format([timestamp - 0.1]))
+    print("latency {0}".format([Connection.clock_synchronizer.latency]))
+    print("factor {0}".format([network_interpolator.interpolation_factor * 0.1]))
+    print("==========================")
+
+
+    hit_detected.rpc_id(1, timestamp, target_network_node.network_id, target.position)
 
 
 func other_client_physics_process(_delta: float) -> void:
@@ -129,7 +177,7 @@ func detect_hit() -> Dictionary:
     return space.intersect_ray(query)
 
 @rpc("call_remote", "any_peer", "reliable")
-func hit_detected(timestamp: float, network_id: int) -> void:
+func hit_detected(timestamp: float, network_id: int, target_position: Vector3) -> void:
     # This code should only run on server
     if not multiplayer.is_server():
         return
@@ -139,7 +187,7 @@ func hit_detected(timestamp: float, network_id: int) -> void:
     if network_node.peer_id != peer_id:
         return
 
-    hit_buffer.append({"ts": timestamp, "id": peer_id, "ni": network_id})
+    hit_buffer.append({"ts": timestamp, "id": peer_id, "ni": network_id, "tp": target_position})
 
 @rpc("call_remote", "authority", "reliable")
 func hit_comfirmed(_timestamp: float, network_id: int) -> void:

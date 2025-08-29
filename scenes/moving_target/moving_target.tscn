@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=3 uid="uid://mnr37o6va7hm"]
+[gd_scene load_steps=13 format=3 uid="uid://mnr37o6va7hm"]
 
 [ext_resource type="Script" uid="uid://87fs0ev4amdx" path="res://scenes/moving_target/moving_target.gd" id="1_ke1pb"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_x4ogj"]
 [ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="3_2ppaf"]
 [ext_resource type="PackedScene" uid="uid://dyoo4ranajnsr" path="res://components/networking/health_synchronizer/health_synchronizer.tscn" id="4_m888s"]
+[ext_resource type="PackedScene" uid="uid://cautmgcgdliec" path="res://components/networking/network_interpolator/network_interpolator.tscn" id="4_vrvnx"]
 [ext_resource type="PackedScene" uid="uid://bxpq3pehfwvmq" path="res://components/other_health_bar/other_health_bar.tscn" id="5_cdb7b"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_brhfe"]
@@ -39,6 +40,9 @@ script = ExtResource("1_ke1pb")
 [node name="NetworkNode" parent="." instance=ExtResource("2_x4ogj")]
 
 [node name="PropertyBuffer" parent="." instance=ExtResource("3_2ppaf")]
+property_paths = Array[String]([":transform"])
+
+[node name="NetworkInterpolator" parent="." instance=ExtResource("4_vrvnx")]
 property_paths = Array[String]([":transform"])
 
 [node name="HealthSynchronizer" parent="." instance=ExtResource("4_m888s")]

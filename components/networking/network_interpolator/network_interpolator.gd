@@ -12,6 +12,8 @@ var network_node: NetworkNode = null
 
 var buffer: Dictionary[String, Array] = {}
 
+var interpolation_factor: float = 0.0
+
 func _ready() -> void:
     parent = get_parent()
     assert(parent != null, "Parent can't be null")
@@ -72,6 +74,8 @@ func other_client_physics_process(_delta: float) -> void:
         for i in range(property_values.size() - 1):
             if property_values[i]["ts"] <= render_time and property_values[i + 1]["ts"] >= render_time:
                 var t: float = (render_time - property_values[i]["ts"]) / (property_values[i + 1]["ts"] - property_values[i]["ts"])
+
+                interpolation_factor =  t
 
                 var property_value = property_values[i]["pv"]
 

@@ -44,5 +44,5 @@ func add_player(peer_id: int, username: String) -> void:
     # Connection.add_network_node(player.network_id, player)
 
 # Removing player on server side
-func remove_player(peer_id: int, username: String) -> void:
+func remove_player(_peer_id: int, _username: String) -> void:
     pass
