@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bysfo245ukgjp"]
+
+[ext_resource type="Script" uid="uid://dsqdiq4raglr8" path="res://classes/gun.gd" id="1_iolmt"]
+
+[node name="Pistol" type="Node"]
+script = ExtResource("1_iolmt")
+mag_size = 3
+max_bullets = 15
+metadata/_custom_type_script = "uid://dsqdiq4raglr8"

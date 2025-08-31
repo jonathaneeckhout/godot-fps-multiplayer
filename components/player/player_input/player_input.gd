@@ -65,7 +65,7 @@ func _physics_process(delta):
 
     jump = Input.is_action_just_pressed("jump")
 
-    fire = Input.is_action_just_pressed("fire")
+    fire = Input.is_action_pressed("fire")
 
     if _override_mouse:
         look_angle = Vector2.ZERO

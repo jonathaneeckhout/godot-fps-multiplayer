@@ -26,3 +26,6 @@ func remove_network_node(network_id: int) -> bool:
 
 func get_network_node(network_id: int) -> Node3D:
     return _network_nodes.get(network_id)
+
+func get_network_nodes() -> Array[Node3D]:
+    return _network_nodes.values()

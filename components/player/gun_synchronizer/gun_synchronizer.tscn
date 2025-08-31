@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcmo2l1i1nx5g"]
+
+[ext_resource type="Script" uid="uid://c8cg0q7s6o8wx" path="res://components/player/gun_synchronizer/gun_synchronizer.gd" id="1_mih3f"]
+
+[node name="GunSynchronizer" type="Node"]
+script = ExtResource("1_mih3f")
