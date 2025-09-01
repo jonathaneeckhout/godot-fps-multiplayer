@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://bynplakgjw7hk"]
+[gd_scene load_steps=18 format=3 uid="uid://bynplakgjw7hk"]
 
 [ext_resource type="Script" uid="uid://dknpiy2j1x40h" path="res://scenes/game/game.gd" id="1_5i0tg"]
 [ext_resource type="PackedScene" uid="uid://6gytalh108qd" path="res://components/map/player_spawner/player_spawner.tscn" id="1_7h61r"]
@@ -17,7 +17,11 @@ background_mode = 2
 sky = SubResource("Sky_0sr1o")
 tonemap_mode = 2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kelw5"]
+albedo_color = Color(0.394678, 0.282171, 0.147099, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_yyfjg"]
+material = SubResource("StandardMaterial3D_kelw5")
 size = Vector3(50, 1, 50)
 
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_0sr1o"]

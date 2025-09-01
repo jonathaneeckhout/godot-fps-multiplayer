@@ -10,6 +10,7 @@ var direction: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
 var jump: bool = false
 var fire: bool = false
+var reload: bool = false
 var next_weapon: bool = false
 var previous_weapon: bool = false
 var timestamp: float = 0.0
@@ -67,6 +68,8 @@ func _physics_process(delta):
 
     fire = Input.is_action_pressed("fire")
 
+    reload = Input.is_action_just_pressed("reload")
+
     if _override_mouse:
         look_angle = Vector2.ZERO
     else:
@@ -80,12 +83,12 @@ func _physics_process(delta):
     _wheel_up = false
     _wheel_down = false
 
-    add_input(timestamp, direction, look_angle, jump, fire)
+    add_input(timestamp, direction, look_angle, jump, fire, reload)
 
-    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire)
+    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire, reload)
 
-func add_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> void:
-    input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi})
+func add_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool) -> void:
+    input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi, "re": re})
 
     if input_buffer.size() > input_buffer_size:
         input_buffer.remove_at(0)
@@ -95,6 +98,7 @@ func get_inputs(from: float, to: float) -> Array[Dictionary]:
 
     for input in input_buffer:
         var ts: float = input["ts"]
+
         # Don't take the from field as it would result in too many inputs (thus no ts >= from but ts > from)
         if ts > from and ts <= to:
             filtered_inputs.append(input)
@@ -102,7 +106,7 @@ func get_inputs(from: float, to: float) -> Array[Dictionary]:
     return filtered_inputs
 
 @rpc("call_remote", "any_peer", "reliable")
-func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> void:
+func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool) -> void:
     if not multiplayer.is_server():
         return
 
@@ -110,4 +114,4 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool) -> voi
     if network_node.peer_id != peer_id:
         return
 
-    add_input(ts, di, la, ju, fi)
+    add_input(ts, di, la, ju, fi, re)

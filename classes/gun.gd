@@ -44,6 +44,19 @@ func fire() -> bool:
     return true
 
 
+func reload() -> bool:
+    if is_out_of_ammo():
+        return false
+
+    var bullets_needed: int = mag_size - magazine
+    var bullets_to_reload: int = min(bullets_needed, spare_bullets)
+
+    magazine += bullets_to_reload
+    spare_bullets -= bullets_to_reload
+
+    return true
+
+
 func is_mag_empty() -> bool:
     return magazine == 0
 
@@ -54,6 +67,10 @@ func is_out_of_ammo() -> bool:
 
 func get_magazine() -> int:
     return magazine
+
+
+func get_spare_bullets() -> int:
+    return spare_bullets
 
 
 func get_damage() -> int:

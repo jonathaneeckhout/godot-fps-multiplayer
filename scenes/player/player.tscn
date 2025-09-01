@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=30 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dyoo4ranajnsr" path="res://components/networking/health_synchronizer/health_synchronizer.tscn" id="8_5gtgg"]
 [ext_resource type="PackedScene" uid="uid://bcmo2l1i1nx5g" path="res://components/player/gun_synchronizer/gun_synchronizer.tscn" id="8_je7p5"]
 [ext_resource type="PackedScene" uid="uid://bxpq3pehfwvmq" path="res://components/other_health_bar/other_health_bar.tscn" id="10_h17s1"]
+[ext_resource type="PackedScene" uid="uid://b8gqb8nuxmijf" path="res://scenes/player/ui/ammunition_display/ammunition_display.tscn" id="11_je7p5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
@@ -234,17 +235,24 @@ texture = SubResource("ViewportTexture_je7p5")
 [node name="HUDCanvasLayer" type="CanvasLayer" parent="."]
 unique_name_in_owner = true
 
-[node name="MarginContainer" type="MarginContainer" parent="HUDCanvasLayer"]
-anchors_preset = 1
+[node name="GunStats" type="MarginContainer" parent="HUDCanvasLayer"]
+anchors_preset = 3
 anchor_left = 1.0
+anchor_top = 1.0
 anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = -256.0
-offset_bottom = 40.0
+offset_top = -64.0
 grow_horizontal = 0
+grow_vertical = 0
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 16
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 16
+
+[node name="AmmunitionDisplay" parent="HUDCanvasLayer/GunStats" node_paths=PackedStringArray("gun_synchronizer") instance=ExtResource("11_je7p5")]
+layout_mode = 2
+gun_synchronizer = NodePath("../../../GunSynchronizer")
 
 [node name="Label" type="Label" parent="HUDCanvasLayer"]
 anchors_preset = 8

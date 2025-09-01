@@ -2,6 +2,7 @@ class_name GunSynchronizer
 extends Node
 
 signal fired()
+signal reloaded()
 
 @export var gun: Gun = null
 
@@ -39,25 +40,22 @@ func server_physics_process(_delta: float) -> void:
     if inputs.is_empty():
         return
 
-    for input in inputs:
-        if not input["fi"]:
-            continue
+    for input: Dictionary in inputs:
+        handle_fire(input["ts"], input["fi"])
 
-        if gun == null:
-            continue
-
-        if not gun.fire():
-            continue
-
-        lag_compensate_shot(input["ts"])
-
-        fired.emit()
+        handle_reload(input["re"])
 
     last_timestamp = inputs[-1]["ts"]
 
 
 func local_client_physics_process(_delta: float) -> void:
-    if not player_input.fire:
+    handle_fire(Connection.clock_synchronizer.get_time(), player_input.fire)
+
+    handle_reload(player_input.reload)
+
+
+func handle_fire(timestamp: float, fire: bool) -> void:
+    if not fire:
         return
 
     if gun == null:
@@ -66,8 +64,22 @@ func local_client_physics_process(_delta: float) -> void:
     if not gun.fire():
         return
 
+    if network_node.mode == NetworkNode.Modes.SERVER:
+        lag_compensate_shot(timestamp)
+
     fired.emit()
 
+func handle_reload(reload: bool) -> void:
+    if not reload:
+        return
+
+    if gun == null:
+        return
+
+    if not gun.reload():
+        return
+
+    reloaded.emit()
 
 func equip_gun(new_gun: Gun) -> Gun:
     var old_gun: Gun = gun
@@ -159,3 +171,6 @@ func detect_hit() -> Dictionary:
     )
 
     return space.intersect_ray(query)
+
+func get_gun() -> Gun:
+    return gun

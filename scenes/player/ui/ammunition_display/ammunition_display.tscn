@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8gqb8nuxmijf"]
+
+[ext_resource type="Script" uid="uid://dhxv5nqdt21co" path="res://scenes/player/ui/ammunition_display/ammunition_display.gd" id="1_i6xtq"]
+
+[node name="AmmunitionDisplay" type="Control"]
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1024.0
+offset_bottom = -616.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i6xtq")
+
+[node name="AmmoLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -11.5
+offset_bottom = 11.5
+grow_horizontal = 0
+grow_vertical = 2
+text = "0 / 0"
