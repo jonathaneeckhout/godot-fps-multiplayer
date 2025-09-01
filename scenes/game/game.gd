@@ -3,7 +3,6 @@ extends Node3D
 
 func _ready() -> void:
     if multiplayer.is_server():
-        print(multiplayer.is_server())
         var moving_target: MovingTarget = load("res://scenes/moving_target/moving_target.tscn").instantiate()
         moving_target.name = "dummy1"
         moving_target.move = true

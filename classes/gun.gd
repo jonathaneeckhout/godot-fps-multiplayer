@@ -37,8 +37,6 @@ func fire() -> bool:
     if automatic and (current_time - last_fire <= time_between_shots):
         return false
 
-    print(current_time - last_fire)
-
     magazine -= 1
 
     last_fire = current_time

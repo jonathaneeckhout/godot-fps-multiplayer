@@ -49,7 +49,7 @@ func server_physics_process(_delta: float) -> void:
         if not gun.fire():
             continue
 
-        # TODO: verify hit (copy code from shot_synchronizer)
+        lag_compensate_shot(input["ts"])
 
         fired.emit()
 
@@ -84,20 +84,70 @@ func equip_gun(new_gun: Gun) -> Gun:
 
     return old_gun
 
-func lag_compensate() -> void:
+func lag_compensate_shot(timestamp: float) -> void:
+    # Gun should not be null
+    if gun == null:
+        return
+
     # Lag compensation should only work on the server
     if network_node.mode != NetworkNode.Modes.SERVER:
         return
 
-    for other_node: Node3D in Connection.get_network_nodes():
+    var network_nodes: Array[Node3D] = Connection.get_network_nodes()
+
+    # The player sees other nodes in the past so substract the interpolation offset
+    var interpolated_timestamp: float = timestamp - 0.1
+
+    var old_transforms: Dictionary[int, Transform3D] = {}
+
+    # Set the other nodes transform to the time the shot was fired
+    for other_node: Node3D in network_nodes:
         var other_network_node: NetworkNode = other_node.get_node_or_null("NetworkNode")
         assert(other_network_node != null, "Missing NetworkNode in other network node")
 
         # Don't handle own node
-        if other_network_node.peer_id == network_node.peer_id:
+        if other_network_node.network_id == network_node.network_id:
             continue
-        
-        
+
+        var other_property_buffer: PropertyBuffer = other_node.get_node_or_null("PropertyBuffer")
+        assert(other_property_buffer, "PropertyBuffer not found")
+
+        old_transforms[other_network_node.network_id] = other_node.transform
+
+        other_node.transform = other_property_buffer.get_interpolated_transform(":transform", interpolated_timestamp)
+
+        other_node.force_update_transform()
+
+    var hit: Dictionary = detect_hit()
+
+    # Restore the transforms of the other network nodes
+    for other_node: Node3D in network_nodes:
+        var other_network_node: NetworkNode = other_node.get_node_or_null("NetworkNode")
+        assert(other_network_node != null, "Missing NetworkNode in other network node")
+
+        # Don't handle own node
+        if other_network_node.network_id == network_node.network_id:
+            continue
+
+        other_node.transform = old_transforms[other_network_node.network_id]
+
+        other_node.force_update_transform()
+
+    # Didn't hit anything, return
+    if hit.is_empty():
+        return
+
+    var collider: Node3D = hit.collider as Node3D
+
+    var collider_network_node: NetworkNode = collider.get_node_or_null("NetworkNode")
+    if collider_network_node == null:
+        return
+
+    var collider_health_synchronizer: HealthSynchronizer = collider.get_node_or_null("HealthSynchronizer")
+    if collider_health_synchronizer != null:
+        collider_health_synchronizer.hurt(gun.get_damage())
+
+
 func detect_hit() -> Dictionary:
     var space := aim_point.get_world_3d().direct_space_state
 

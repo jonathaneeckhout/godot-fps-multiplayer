@@ -35,8 +35,8 @@ func _ready() -> void:
             head.hide()
 
     # Todo: remove debug lines
-    var gun: Gun = load("res://scenes/guns/pistol/Pistol.tscn").instantiate()
+    # var gun: Gun = load("res://scenes/guns/pistol/Pistol.tscn").instantiate()
 
-    # var gun: Gun = load("res://scenes/guns/rifle/Rifle.tscn").instantiate()
+    var gun: Gun = load("res://scenes/guns/rifle/Rifle.tscn").instantiate()
 
     gun_synchronizer.equip_gun(gun)

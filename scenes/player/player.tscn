@@ -1,11 +1,10 @@
-[gd_scene load_steps=30 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=29 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
 [ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/player/player_input/player_input.tscn" id="2_gmlin"]
 [ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/player/transform_synchronizer/transform_synchronizer.tscn" id="3_lvxji"]
 [ext_resource type="PackedScene" uid="uid://vbp50deepeeh" path="res://components/player/follow_head/follow_head.tscn" id="4_lvxji"]
-[ext_resource type="PackedScene" uid="uid://dvpcu5205ssm4" path="res://components/player/shot_synchronizer/shot_synchronizer.tscn" id="4_p47bc"]
 [ext_resource type="PackedScene" uid="uid://cautmgcgdliec" path="res://components/networking/network_interpolator/network_interpolator.tscn" id="6_qek5x"]
 [ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="7_0owmy"]
 [ext_resource type="PackedScene" uid="uid://dyoo4ranajnsr" path="res://components/networking/health_synchronizer/health_synchronizer.tscn" id="8_5gtgg"]
@@ -218,9 +217,6 @@ head = NodePath("../Head")
 
 [node name="NetworkInterpolator" parent="." instance=ExtResource("6_qek5x")]
 property_paths = Array[String]([":transform", "Head:rotation"])
-
-[node name="ShotSynchronizer" parent="." node_paths=PackedStringArray("aim_point") instance=ExtResource("4_p47bc")]
-aim_point = NodePath("../Head/AimMarker")
 
 [node name="GunSynchronizer" parent="." node_paths=PackedStringArray("aim_point") instance=ExtResource("8_je7p5")]
 aim_point = NodePath("../Head/AimMarker")
