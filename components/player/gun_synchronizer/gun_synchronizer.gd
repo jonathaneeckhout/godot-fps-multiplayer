@@ -76,7 +76,7 @@ func handle_reload(reload: bool) -> void:
     if gun == null:
         return
 
-    if not gun.reload():
+    if not await gun.reload():
         return
 
     reloaded.emit()
