@@ -1,0 +1,34 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccsbft8oecb47"]
+
+[ext_resource type="PackedScene" uid="uid://b6o2jh30wk04w" path="res://assets/models/characters/alien_guy.glb" id="1_ixgjb"]
+
+[node name="PlayerModel" instance=ExtResource("1_ixgjb")]
+
+[node name="Skeleton3D" parent="Skinned Mesh" index="0"]
+bones/1/position = Vector3(0.00329121, 0.0680978, 0.420134)
+bones/1/rotation = Quaternion(0.763313, -0.0891573, -0.0742315, 0.635527)
+bones/3/rotation = Quaternion(-0.0275149, 0.000116233, 0.000123635, 0.999621)
+bones/4/rotation = Quaternion(0.148845, 0.000317944, 0.00039553, 0.98886)
+bones/5/rotation = Quaternion(0.0114886, -0.000240349, -0.000239104, 0.999934)
+bones/7/rotation = Quaternion(-0.0277836, 0.096038, -0.00148689, 0.994989)
+bones/9/rotation = Quaternion(-0.661364, -0.215719, -0.22314, 0.682841)
+bones/10/rotation = Quaternion(0.450771, 0.396292, -0.731943, 0.322519)
+bones/11/rotation = Quaternion(0.475193, -0.204731, 0.114747, 0.848003)
+bones/12/rotation = Quaternion(-0.0551042, -0.600043, 0.299843, 0.739599)
+bones/13/rotation = Quaternion(-0.0853229, 0.702285, -0.0805029, 0.702165)
+bones/14/rotation = Quaternion(-0.5052, 0.457102, 0.515667, 0.519536)
+bones/15/rotation = Quaternion(0.645645, -0.321061, 0.608565, 0.331228)
+bones/16/rotation = Quaternion(0.220722, 0.410329, -0.102921, 0.878817)
+bones/17/rotation = Quaternion(-0.0259921, 0.319481, -0.0804597, 0.943813)
+bones/18/rotation = Quaternion(0.390154, -0.551485, 0.465622, 0.5717)
+bones/19/rotation = Quaternion(0.95354, 0.1175, -0.0144871, 0.277032)
+bones/20/rotation = Quaternion(0.22899, -0.109202, 0.0258508, 0.966939)
+bones/21/rotation = Quaternion(-0.512769, 0.0225095, 0.0933819, 0.853136)
+bones/22/rotation = Quaternion(-0.000137132, 0.964307, -0.264787, -0.000499653)
+bones/24/rotation = Quaternion(0.989218, -0.136952, 0.0168859, 0.0490517)
+bones/25/rotation = Quaternion(0.177009, 0.350251, -0.067597, 0.917291)
+bones/26/rotation = Quaternion(-0.60432, -0.0541888, -0.161808, 0.778254)
+bones/27/rotation = Quaternion(-0.000137122, 0.964307, -0.264787, -0.000499547)
+
+[node name="AnimationPlayer" parent="." index="1"]
+autoplay = "Idle"

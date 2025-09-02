@@ -1,10 +1,10 @@
-[gd_scene load_steps=30 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=17 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
 [ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/player/player_input/player_input.tscn" id="2_gmlin"]
+[ext_resource type="PackedScene" uid="uid://ccsbft8oecb47" path="res://scenes/player/model/player_model.tscn" id="3_fm80t"]
 [ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/player/transform_synchronizer/transform_synchronizer.tscn" id="3_lvxji"]
-[ext_resource type="PackedScene" uid="uid://vbp50deepeeh" path="res://components/player/follow_head/follow_head.tscn" id="4_lvxji"]
 [ext_resource type="PackedScene" uid="uid://cautmgcgdliec" path="res://components/networking/network_interpolator/network_interpolator.tscn" id="6_qek5x"]
 [ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="7_0owmy"]
 [ext_resource type="PackedScene" uid="uid://dyoo4ranajnsr" path="res://components/networking/health_synchronizer/health_synchronizer.tscn" id="8_5gtgg"]
@@ -14,65 +14,8 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ph0x8"]
-albedo_color = Color(0.375015, 0.595405, 0.330155, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ya1xr"]
-material = SubResource("StandardMaterial3D_ph0x8")
-height = 1.5
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ya1xr"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ph0x8"]
-material = SubResource("StandardMaterial3D_ya1xr")
-radius = 0.125
-height = 0.2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_itfo8"]
-albedo_color = Color(0.0297741, 0.166566, 3.60981e-08, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_iweaw"]
-material = SubResource("StandardMaterial3D_itfo8")
-top_radius = 0.51
-bottom_radius = 0.51
-height = 0.4
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i1cj6"]
 albedo_color = Color(0.191175, 0.0817445, 1.20327e-08, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_ya1xr"]
-material = SubResource("StandardMaterial3D_i1cj6")
-top_radius = 0.51
-bottom_radius = 0.51
-height = 0.1
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_beyj0"]
-albedo_color = Color(0.81312, 0.184634, 9.62615e-08, 1)
-
-[sub_resource type="CylinderMesh" id="CylinderMesh_ews16"]
-material = SubResource("StandardMaterial3D_beyj0")
-top_radius = 0.51
-bottom_radius = 0.51
-height = 0.1
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_iweaw"]
-material = SubResource("StandardMaterial3D_beyj0")
-radius = 0.05
-height = 0.2
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yvf8r"]
-albedo_color = Color(0.0297741, 0.166566, 3.60981e-08, 1)
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_ph0x8"]
-material = SubResource("StandardMaterial3D_yvf8r")
-radius = 0.1
-height = 0.6
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_itfo8"]
-material = SubResource("StandardMaterial3D_i1cj6")
-radius = 0.11
-height = 0.4
 
 [sub_resource type="SphereMesh" id="SphereMesh_ya1xr"]
 material = SubResource("StandardMaterial3D_i1cj6")
@@ -111,72 +54,7 @@ shape = SubResource("CapsuleShape3D_ya1xr")
 [node name="Model" type="Node3D" parent="."]
 unique_name_in_owner = true
 
-[node name="Body" type="MeshInstance3D" parent="Model"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-mesh = SubResource("CapsuleMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="RightEye" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.3, 0.5)
-mesh = SubResource("SphereMesh_ph0x8")
-
-[node name="LeftEye" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.3, 0.5)
-mesh = SubResource("SphereMesh_ph0x8")
-
-[node name="Pants" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
-mesh = SubResource("CylinderMesh_iweaw")
-
-[node name="Belt" type="MeshInstance3D" parent="Model/Body/Pants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-mesh = SubResource("CylinderMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="Headband" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
-mesh = SubResource("CylinderMesh_ews16")
-
-[node name="LeftKnot" type="MeshInstance3D" parent="Model/Body/Headband"]
-transform = Transform3D(0.707107, -0.612372, -0.353553, 0, 0.5, -0.866025, 0.707107, 0.612372, 0.353553, 0.05, -0.05, -0.55)
-mesh = SubResource("CapsuleMesh_iweaw")
-
-[node name="RightKnot" type="MeshInstance3D" parent="Model/Body/Headband"]
-transform = Transform3D(0.707107, 0.612372, 0.353553, 0, 0.5, -0.866025, -0.707107, 0.612372, 0.353553, -0.05, -0.05, -0.55)
-mesh = SubResource("CapsuleMesh_iweaw")
-
-[node name="RightLeg" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.9, 0)
-mesh = SubResource("CapsuleMesh_ph0x8")
-skeleton = NodePath("../..")
-
-[node name="RightFoot" type="MeshInstance3D" parent="Model/Body/RightLeg"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, 0.1)
-mesh = SubResource("CapsuleMesh_itfo8")
-
-[node name="LeftLeg" type="MeshInstance3D" parent="Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.9, 0)
-mesh = SubResource("CapsuleMesh_ph0x8")
-skeleton = NodePath("../..")
-
-[node name="LeftFoot" type="MeshInstance3D" parent="Model/Body/LeftLeg"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.2, 0.1)
-mesh = SubResource("CapsuleMesh_itfo8")
-
-[node name="shoulder" type="Node3D" parent="Model/Body"]
-
-[node name="LeftHand" type="MeshInstance3D" parent="Model/Body/shoulder"]
-transform = Transform3D(-0.830012, 0.557745, 0, -0.429129, -0.638611, -0.638768, -0.35627, -0.530185, 0.7694, 0.14, -0.064, 0.7)
-mesh = SubResource("SphereMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="RightHand" type="MeshInstance3D" parent="Model/Body/shoulder"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.038, 0.73)
-mesh = SubResource("SphereMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="OtherWeaponLocation" type="Marker3D" parent="Model/Body/shoulder/RightHand"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0.1, -0.1)
+[node name="PlayerModel" parent="Model" instance=ExtResource("3_fm80t")]
 
 [node name="Head" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -223,10 +101,6 @@ property_paths = Array[String]([":transform", "Head:rotation"])
 aim_point = NodePath("../Head/AimMarker")
 
 [node name="HealthSynchronizer" parent="." instance=ExtResource("8_5gtgg")]
-
-[node name="FollowHead" parent="." node_paths=PackedStringArray("head", "replica") instance=ExtResource("4_lvxji")]
-head = NodePath("../Head")
-replica = NodePath("../Model/Body/shoulder")
 
 [node name="OtherHealthBar" parent="." instance=ExtResource("10_h17s1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, 0)

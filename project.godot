@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 Connection="*res://globals/connection.gd"
 
+[filesystem]
+
+import/blender/enabled=false
+
 [input]
 
 move_up={
