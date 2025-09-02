@@ -1,11 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://ccsbft8oecb47"]
+[gd_scene load_steps=15 format=3 uid="uid://ccsbft8oecb47"]
 
 [ext_resource type="PackedScene" uid="uid://b6o2jh30wk04w" path="res://assets/models/characters/alien_guy.glb" id="1_ixgjb"]
 [ext_resource type="Script" uid="uid://m0tuteth2is2" path="res://scenes/player/model/player_model.gd" id="2_6cs8s"]
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_6cs8s"]
 filter_enabled = true
-filters = ["Skinned Mesh/Skeleton3D:DEF-footL", "Skinned Mesh/Skeleton3D:DEF-footR", "Skinned Mesh/Skeleton3D:DEF-hips", "Skinned Mesh/Skeleton3D:DEF-shinL", "Skinned Mesh/Skeleton3D:DEF-shinR", "Skinned Mesh/Skeleton3D:DEF-spine002", "Skinned Mesh/Skeleton3D:DEF-thighL", "Skinned Mesh/Skeleton3D:DEF-thighR", "Skinned Mesh/Skeleton3D:DEF-toeL", "Skinned Mesh/Skeleton3D:DEF-toeR"]
+filters = ["Skinned Mesh/Skeleton3D:DEF-footL", "Skinned Mesh/Skeleton3D:DEF-footR", "Skinned Mesh/Skeleton3D:DEF-hips", "Skinned Mesh/Skeleton3D:DEF-shinL", "Skinned Mesh/Skeleton3D:DEF-shinR", "Skinned Mesh/Skeleton3D:DEF-thighL", "Skinned Mesh/Skeleton3D:DEF-thighR", "Skinned Mesh/Skeleton3D:DEF-toeL", "Skinned Mesh/Skeleton3D:DEF-toeR"]
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0rwc7"]
 animation = &"Pistol_Reload"
@@ -41,6 +41,8 @@ filters = ["Skinned Mesh/Skeleton3D:DEF-f_middle01L", "Skinned Mesh/Skeleton3D:D
 filter_enabled = true
 filters = ["Skinned Mesh/Skeleton3D:DEF-f_middle01L", "Skinned Mesh/Skeleton3D:DEF-f_middle01R", "Skinned Mesh/Skeleton3D:DEF-forearmL", "Skinned Mesh/Skeleton3D:DEF-forearmR", "Skinned Mesh/Skeleton3D:DEF-handL", "Skinned Mesh/Skeleton3D:DEF-handR", "Skinned Mesh/Skeleton3D:DEF-shoulderL", "Skinned Mesh/Skeleton3D:DEF-shoulderR", "Skinned Mesh/Skeleton3D:DEF-upper_armL", "Skinned Mesh/Skeleton3D:DEF-upper_armR"]
 
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_6cs8s"]
+
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ommf3"]
 graph_offset = Vector2(-859, -84)
 nodes/AddIdleJog/node = SubResource("AnimationNodeAdd2_6cs8s")
@@ -57,44 +59,46 @@ nodes/ReloadOneShot/node = SubResource("AnimationNodeOneShot_keoob")
 nodes/ReloadOneShot/position = Vector2(420, 140)
 nodes/ShootOneShot/node = SubResource("AnimationNodeOneShot_883qf")
 nodes/ShootOneShot/position = Vector2(180, 140)
+nodes/TimeScale/node = SubResource("AnimationNodeTimeScale_6cs8s")
+nodes/TimeScale/position = Vector2(-200, 240)
 nodes/output/position = Vector2(640, 140)
-node_connections = [&"AddIdleJog", 0, &"IdleBlendSpace1D", &"AddIdleJog", 1, &"Jog", &"ReloadOneShot", 0, &"ShootOneShot", &"ReloadOneShot", 1, &"Animation 2", &"ShootOneShot", 0, &"AddIdleJog", &"ShootOneShot", 1, &"Animation", &"output", 0, &"ReloadOneShot"]
+node_connections = [&"AddIdleJog", 0, &"IdleBlendSpace1D", &"AddIdleJog", 1, &"TimeScale", &"ReloadOneShot", 0, &"ShootOneShot", &"ReloadOneShot", 1, &"Animation 2", &"ShootOneShot", 0, &"AddIdleJog", &"ShootOneShot", 1, &"Animation", &"TimeScale", 0, &"Jog", &"output", 0, &"ReloadOneShot"]
 
 [node name="PlayerModel" instance=ExtResource("1_ixgjb")]
 script = ExtResource("2_6cs8s")
 
 [node name="Skeleton3D" parent="Skinned Mesh" index="0"]
-bones/1/position = Vector3(0.00292177, 0.0661921, 0.423626)
-bones/1/rotation = Quaternion(0.754657, -0.0881463, -0.0754293, 0.645781)
-bones/3/rotation = Quaternion(-0.0313136, -0.053627, -0.00546469, 0.998055)
-bones/4/rotation = Quaternion(0.136544, -0.158061, -0.0286283, 0.977524)
-bones/5/rotation = Quaternion(0.119034, 0.107481, -0.00352932, 0.987049)
-bones/7/rotation = Quaternion(-0.0433148, 0.21119, 0.0102337, 0.976431)
+bones/1/position = Vector3(0.00523503, 0.0727332, 0.378498)
+bones/1/rotation = Quaternion(0.785325, -0.0953847, -0.0663179, 0.608086)
+bones/3/rotation = Quaternion(-0.026065, -0.0538016, -0.0043244, 0.998202)
+bones/4/rotation = Quaternion(0.151526, -0.158711, -0.025381, 0.975298)
+bones/5/rotation = Quaternion(0.109544, 0.107494, -0.00562361, 0.988136)
+bones/7/rotation = Quaternion(-0.0276204, 0.211153, 0.00117698, 0.977062)
 bones/9/rotation = Quaternion(-0.661364, -0.215719, -0.22314, 0.682841)
-bones/10/rotation = Quaternion(0.460606, 0.402041, -0.717391, 0.333999)
-bones/11/rotation = Quaternion(0.498525, -0.200424, 0.119681, 0.834853)
-bones/12/rotation = Quaternion(-0.0592029, -0.609406, 0.314836, 0.725257)
+bones/10/rotation = Quaternion(0.467424, 0.406815, -0.705628, 0.343665)
+bones/11/rotation = Quaternion(0.516267, -0.197685, 0.12385, 0.824045)
+bones/12/rotation = Quaternion(-0.055338, -0.616957, 0.326332, 0.714009)
 bones/13/rotation = Quaternion(-0.0853228, 0.702285, -0.080503, 0.702165)
 bones/14/rotation = Quaternion(-0.5052, 0.457102, 0.515667, 0.519536)
-bones/15/rotation = Quaternion(0.649265, -0.324683, 0.59934, 0.337384)
-bones/16/rotation = Quaternion(0.252195, 0.397174, -0.114478, 0.874954)
-bones/17/rotation = Quaternion(-0.0447664, 0.324304, -0.0908597, 0.940514)
+bones/15/rotation = Quaternion(0.654269, -0.325475, 0.590965, 0.3417)
+bones/16/rotation = Quaternion(0.274492, 0.387971, -0.122224, 0.871317)
+bones/17/rotation = Quaternion(-0.0550503, 0.32478, -0.0999071, 0.938886)
 bones/18/rotation = Quaternion(0.390153, -0.551485, 0.465622, 0.5717)
-bones/19/rotation = Quaternion(0.964729, 0.111391, -0.013734, 0.23812)
-bones/20/rotation = Quaternion(0.181968, -0.112083, 0.0208726, 0.976673)
-bones/21/rotation = Quaternion(-0.494209, 0.0218477, 0.0937164, 0.864001)
-bones/22/rotation = Quaternion(-0.000137115, 0.964307, -0.264787, -0.000499661)
-bones/24/rotation = Quaternion(0.993442, -0.113111, 0.0139463, 0.00915749)
-bones/25/rotation = Quaternion(0.11465, 0.358394, -0.044411, 0.925439)
-bones/26/rotation = Quaternion(-0.578719, -0.0501391, -0.163256, 0.797444)
-bones/27/rotation = Quaternion(-0.000137223, 0.964307, -0.264787, -0.000499584)
+bones/19/rotation = Quaternion(0.582027, 0.0905022, 0.0623552, 0.805709)
+bones/20/rotation = Quaternion(0.85394, -0.0614831, 0.101062, 0.506747)
+bones/21/rotation = Quaternion(-0.407867, 0.133149, 0.000879472, 0.90328)
+bones/22/rotation = Quaternion(-0.000384911, 0.949274, -0.314448, -0.00150347)
+bones/24/rotation = Quaternion(0.990811, -0.118083, 0.021987, -0.0621783)
+bones/25/rotation = Quaternion(0.458812, 0.312958, -0.177127, 0.812512)
+bones/26/rotation = Quaternion(-0.542698, -0.0551289, -0.162061, 0.822299)
+bones/27/rotation = Quaternion(-0.000302881, 0.811149, -0.58484, -0.000418371)
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
 unique_name_in_owner = true
 root_node = NodePath("%AnimationTree/..")
 tree_root = SubResource("AnimationNodeBlendTree_ommf3")
 anim_player = NodePath("../AnimationPlayer")
-parameters/AddIdleJog/add_amount = 0.0
+parameters/AddIdleJog/add_amount = 1.0
 parameters/IdleBlendSpace1D/blend_position = 0.0
 parameters/ReloadOneShot/active = false
 parameters/ReloadOneShot/internal_active = false
@@ -102,3 +106,4 @@ parameters/ReloadOneShot/request = 0
 parameters/ShootOneShot/active = false
 parameters/ShootOneShot/internal_active = false
 parameters/ShootOneShot/request = 0
+parameters/TimeScale/scale = 1.5
