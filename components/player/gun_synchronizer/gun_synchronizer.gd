@@ -67,6 +67,8 @@ func handle_fire(timestamp: float, fire: bool) -> void:
     if network_node.mode == NetworkNode.Modes.SERVER:
         lag_compensate_shot(timestamp)
 
+        _sync_fired.rpc()
+
     fired.emit()
 
 func handle_reload(reload: bool) -> void:
@@ -78,6 +80,10 @@ func handle_reload(reload: bool) -> void:
 
     if not await gun.reload():
         return
+
+    if network_node.mode == NetworkNode.Modes.SERVER:
+        _sync_reloaded.rpc()
+
 
     reloaded.emit()
 
@@ -174,3 +180,15 @@ func detect_hit() -> Dictionary:
 
 func get_gun() -> Gun:
     return gun
+
+
+@rpc("call_remote", "authority", "reliable")
+func _sync_fired() -> void:
+    if network_node.mode == network_node.Modes.OTHER:
+        fired.emit()
+
+
+@rpc("call_remote", "authority", "reliable")
+func _sync_reloaded() -> void:
+    if network_node.mode == network_node.Modes.OTHER:
+        reloaded.emit()

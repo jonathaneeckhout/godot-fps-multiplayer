@@ -9,8 +9,9 @@ var username: String = ""
 @export var jump_force: float = 8.0
 @export var mouse_sensitivity: float = 0.4
 
+@onready var hud: CanvasLayer = %HUDCanvasLayer
 @onready var head: Node3D = %Head
-@onready var model: Node3D = %Model
+@onready var player_model: PlayerModel = %PlayerModel
 @onready var camera: Camera3D = %Camera
 
 var network_node: NetworkNode = null
@@ -26,13 +27,17 @@ func _ready() -> void:
     match network_node.mode:
         network_node.Modes.SERVER:
             head.hide()
+
+            hud.queue_free()
         network_node.Modes.LOCAL:
-            model.queue_free()
+            player_model.queue_free()
 
             camera.current = true
 
         network_node.Modes.OTHER:
             head.hide()
+
+            hud.queue_free()
 
     # Todo: remove debug lines
     # var gun: Gun = load("res://scenes/guns/pistol/Pistol.tscn").instantiate()

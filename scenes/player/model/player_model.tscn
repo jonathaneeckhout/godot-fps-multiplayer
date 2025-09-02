@@ -1,34 +1,104 @@
-[gd_scene load_steps=2 format=3 uid="uid://ccsbft8oecb47"]
+[gd_scene load_steps=14 format=3 uid="uid://ccsbft8oecb47"]
 
 [ext_resource type="PackedScene" uid="uid://b6o2jh30wk04w" path="res://assets/models/characters/alien_guy.glb" id="1_ixgjb"]
+[ext_resource type="Script" uid="uid://m0tuteth2is2" path="res://scenes/player/model/player_model.gd" id="2_6cs8s"]
+
+[sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_6cs8s"]
+filter_enabled = true
+filters = ["Skinned Mesh/Skeleton3D:DEF-footL", "Skinned Mesh/Skeleton3D:DEF-footR", "Skinned Mesh/Skeleton3D:DEF-hips", "Skinned Mesh/Skeleton3D:DEF-shinL", "Skinned Mesh/Skeleton3D:DEF-shinR", "Skinned Mesh/Skeleton3D:DEF-spine002", "Skinned Mesh/Skeleton3D:DEF-thighL", "Skinned Mesh/Skeleton3D:DEF-thighR", "Skinned Mesh/Skeleton3D:DEF-toeL", "Skinned Mesh/Skeleton3D:DEF-toeR"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_0rwc7"]
+animation = &"Pistol_Reload"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_x0sul"]
+animation = &"Pistol_Shoot"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_6cs8s"]
+animation = &"Pistol_Idle"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_s2nln"]
+animation = &"Pistol_Aim_Up"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ommf3"]
+animation = &"Pistol_Aim_Down"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_0rwc7"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_6cs8s")
+blend_point_0/pos = 0.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_s2nln")
+blend_point_1/pos = -1.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_ommf3")
+blend_point_2/pos = 1.0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_38bnn"]
+animation = &"Jog_Fwd"
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_keoob"]
+filter_enabled = true
+filters = ["Skinned Mesh/Skeleton3D:DEF-f_middle01L", "Skinned Mesh/Skeleton3D:DEF-f_middle01R", "Skinned Mesh/Skeleton3D:DEF-forearmL", "Skinned Mesh/Skeleton3D:DEF-forearmR", "Skinned Mesh/Skeleton3D:DEF-handL", "Skinned Mesh/Skeleton3D:DEF-handR", "Skinned Mesh/Skeleton3D:DEF-shoulderL", "Skinned Mesh/Skeleton3D:DEF-shoulderR", "Skinned Mesh/Skeleton3D:DEF-upper_armL", "Skinned Mesh/Skeleton3D:DEF-upper_armR"]
+
+[sub_resource type="AnimationNodeOneShot" id="AnimationNodeOneShot_883qf"]
+filter_enabled = true
+filters = ["Skinned Mesh/Skeleton3D:DEF-f_middle01L", "Skinned Mesh/Skeleton3D:DEF-f_middle01R", "Skinned Mesh/Skeleton3D:DEF-forearmL", "Skinned Mesh/Skeleton3D:DEF-forearmR", "Skinned Mesh/Skeleton3D:DEF-handL", "Skinned Mesh/Skeleton3D:DEF-handR", "Skinned Mesh/Skeleton3D:DEF-shoulderL", "Skinned Mesh/Skeleton3D:DEF-shoulderR", "Skinned Mesh/Skeleton3D:DEF-upper_armL", "Skinned Mesh/Skeleton3D:DEF-upper_armR"]
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ommf3"]
+graph_offset = Vector2(-859, -84)
+nodes/AddIdleJog/node = SubResource("AnimationNodeAdd2_6cs8s")
+nodes/AddIdleJog/position = Vector2(-20, 40)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_x0sul")
+nodes/Animation/position = Vector2(-20, 360)
+"nodes/Animation 2/node" = SubResource("AnimationNodeAnimation_0rwc7")
+"nodes/Animation 2/position" = Vector2(220, 500)
+nodes/IdleBlendSpace1D/node = SubResource("AnimationNodeBlendSpace1D_0rwc7")
+nodes/IdleBlendSpace1D/position = Vector2(-400, -60)
+nodes/Jog/node = SubResource("AnimationNodeAnimation_38bnn")
+nodes/Jog/position = Vector2(-380, 160)
+nodes/ReloadOneShot/node = SubResource("AnimationNodeOneShot_keoob")
+nodes/ReloadOneShot/position = Vector2(420, 140)
+nodes/ShootOneShot/node = SubResource("AnimationNodeOneShot_883qf")
+nodes/ShootOneShot/position = Vector2(180, 140)
+nodes/output/position = Vector2(640, 140)
+node_connections = [&"AddIdleJog", 0, &"IdleBlendSpace1D", &"AddIdleJog", 1, &"Jog", &"ReloadOneShot", 0, &"ShootOneShot", &"ReloadOneShot", 1, &"Animation 2", &"ShootOneShot", 0, &"AddIdleJog", &"ShootOneShot", 1, &"Animation", &"output", 0, &"ReloadOneShot"]
 
 [node name="PlayerModel" instance=ExtResource("1_ixgjb")]
+script = ExtResource("2_6cs8s")
 
 [node name="Skeleton3D" parent="Skinned Mesh" index="0"]
-bones/1/position = Vector3(0.00329121, 0.0680978, 0.420134)
-bones/1/rotation = Quaternion(0.763313, -0.0891573, -0.0742315, 0.635527)
-bones/3/rotation = Quaternion(-0.0275149, 0.000116233, 0.000123635, 0.999621)
-bones/4/rotation = Quaternion(0.148845, 0.000317944, 0.00039553, 0.98886)
-bones/5/rotation = Quaternion(0.0114886, -0.000240349, -0.000239104, 0.999934)
-bones/7/rotation = Quaternion(-0.0277836, 0.096038, -0.00148689, 0.994989)
+bones/1/position = Vector3(0.00292177, 0.0661921, 0.423626)
+bones/1/rotation = Quaternion(0.754657, -0.0881463, -0.0754293, 0.645781)
+bones/3/rotation = Quaternion(-0.0313136, -0.053627, -0.00546469, 0.998055)
+bones/4/rotation = Quaternion(0.136544, -0.158061, -0.0286283, 0.977524)
+bones/5/rotation = Quaternion(0.119034, 0.107481, -0.00352932, 0.987049)
+bones/7/rotation = Quaternion(-0.0433148, 0.21119, 0.0102337, 0.976431)
 bones/9/rotation = Quaternion(-0.661364, -0.215719, -0.22314, 0.682841)
-bones/10/rotation = Quaternion(0.450771, 0.396292, -0.731943, 0.322519)
-bones/11/rotation = Quaternion(0.475193, -0.204731, 0.114747, 0.848003)
-bones/12/rotation = Quaternion(-0.0551042, -0.600043, 0.299843, 0.739599)
-bones/13/rotation = Quaternion(-0.0853229, 0.702285, -0.0805029, 0.702165)
+bones/10/rotation = Quaternion(0.460606, 0.402041, -0.717391, 0.333999)
+bones/11/rotation = Quaternion(0.498525, -0.200424, 0.119681, 0.834853)
+bones/12/rotation = Quaternion(-0.0592029, -0.609406, 0.314836, 0.725257)
+bones/13/rotation = Quaternion(-0.0853228, 0.702285, -0.080503, 0.702165)
 bones/14/rotation = Quaternion(-0.5052, 0.457102, 0.515667, 0.519536)
-bones/15/rotation = Quaternion(0.645645, -0.321061, 0.608565, 0.331228)
-bones/16/rotation = Quaternion(0.220722, 0.410329, -0.102921, 0.878817)
-bones/17/rotation = Quaternion(-0.0259921, 0.319481, -0.0804597, 0.943813)
-bones/18/rotation = Quaternion(0.390154, -0.551485, 0.465622, 0.5717)
-bones/19/rotation = Quaternion(0.95354, 0.1175, -0.0144871, 0.277032)
-bones/20/rotation = Quaternion(0.22899, -0.109202, 0.0258508, 0.966939)
-bones/21/rotation = Quaternion(-0.512769, 0.0225095, 0.0933819, 0.853136)
-bones/22/rotation = Quaternion(-0.000137132, 0.964307, -0.264787, -0.000499653)
-bones/24/rotation = Quaternion(0.989218, -0.136952, 0.0168859, 0.0490517)
-bones/25/rotation = Quaternion(0.177009, 0.350251, -0.067597, 0.917291)
-bones/26/rotation = Quaternion(-0.60432, -0.0541888, -0.161808, 0.778254)
-bones/27/rotation = Quaternion(-0.000137122, 0.964307, -0.264787, -0.000499547)
+bones/15/rotation = Quaternion(0.649265, -0.324683, 0.59934, 0.337384)
+bones/16/rotation = Quaternion(0.252195, 0.397174, -0.114478, 0.874954)
+bones/17/rotation = Quaternion(-0.0447664, 0.324304, -0.0908597, 0.940514)
+bones/18/rotation = Quaternion(0.390153, -0.551485, 0.465622, 0.5717)
+bones/19/rotation = Quaternion(0.964729, 0.111391, -0.013734, 0.23812)
+bones/20/rotation = Quaternion(0.181968, -0.112083, 0.0208726, 0.976673)
+bones/21/rotation = Quaternion(-0.494209, 0.0218477, 0.0937164, 0.864001)
+bones/22/rotation = Quaternion(-0.000137115, 0.964307, -0.264787, -0.000499661)
+bones/24/rotation = Quaternion(0.993442, -0.113111, 0.0139463, 0.00915749)
+bones/25/rotation = Quaternion(0.11465, 0.358394, -0.044411, 0.925439)
+bones/26/rotation = Quaternion(-0.578719, -0.0501391, -0.163256, 0.797444)
+bones/27/rotation = Quaternion(-0.000137223, 0.964307, -0.264787, -0.000499584)
 
-[node name="AnimationPlayer" parent="." index="1"]
-autoplay = "Idle"
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+unique_name_in_owner = true
+root_node = NodePath("%AnimationTree/..")
+tree_root = SubResource("AnimationNodeBlendTree_ommf3")
+anim_player = NodePath("../AnimationPlayer")
+parameters/AddIdleJog/add_amount = 0.0
+parameters/IdleBlendSpace1D/blend_position = 0.0
+parameters/ReloadOneShot/active = false
+parameters/ReloadOneShot/internal_active = false
+parameters/ReloadOneShot/request = 0
+parameters/ShootOneShot/active = false
+parameters/ShootOneShot/internal_active = false
+parameters/ShootOneShot/request = 0
