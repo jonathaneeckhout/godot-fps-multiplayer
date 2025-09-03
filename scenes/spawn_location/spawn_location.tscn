@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ctjnbruy0rpm5"]
+
+[ext_resource type="Script" uid="uid://ctybqh8pbq8sl" path="res://scenes/spawn_location/spawn_location.gd" id="1_t4fvn"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1xrqv"]
+radius = 1.5
+
+[node name="SpawnLocation" type="Node3D"]
+script = ExtResource("1_t4fvn")
+
+[node name="Area3D" type="Area3D" parent="."]
+unique_name_in_owner = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_1xrqv")
