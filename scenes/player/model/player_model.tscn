@@ -44,7 +44,7 @@ filters = ["Skinned Mesh/Skeleton3D:DEF-f_middle01L", "Skinned Mesh/Skeleton3D:D
 [sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_6cs8s"]
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_ommf3"]
-graph_offset = Vector2(-816.066, -107.603)
+graph_offset = Vector2(-560.857, 0)
 nodes/AddIdleJog/node = SubResource("AnimationNodeAdd2_6cs8s")
 nodes/AddIdleJog/position = Vector2(-20, 40)
 nodes/Animation/node = SubResource("AnimationNodeAnimation_x0sul")
@@ -70,19 +70,19 @@ script = ExtResource("2_6cs8s")
 [node name="Skeleton3D" parent="Skinned Mesh" index="0"]
 bones/1/position = Vector3(0.00292177, 0.0661921, 0.423626)
 bones/1/rotation = Quaternion(0.754657, -0.0881463, -0.0754293, 0.645781)
-bones/3/rotation = Quaternion(-0.0358367, -0.0534633, -0.00644382, 0.997906)
-bones/4/rotation = Quaternion(0.123057, -0.15743, -0.0315335, 0.979326)
-bones/5/rotation = Quaternion(0.128031, 0.107441, -0.00154436, 0.985932)
-bones/7/rotation = Quaternion(-0.0282679, 0.211353, 0.0118392, 0.976929)
+bones/3/rotation = Quaternion(-0.031178, -0.0536317, -0.00543527, 0.998059)
+bones/4/rotation = Quaternion(0.136943, -0.158079, -0.028542, 0.977468)
+bones/5/rotation = Quaternion(0.118765, 0.107482, -0.0035887, 0.987081)
+bones/7/rotation = Quaternion(-0.0433048, 0.21119, 0.0100885, 0.976433)
 bones/9/rotation = Quaternion(-0.661364, -0.215719, -0.22314, 0.682841)
-bones/10/rotation = Quaternion(0.44991, 0.396097, -0.733213, 0.321071)
-bones/11/rotation = Quaternion(0.472645, -0.205554, 0.114397, 0.849275)
-bones/12/rotation = Quaternion(-0.0520592, -0.598903, 0.298085, 0.741451)
+bones/10/rotation = Quaternion(0.460852, 0.402189, -0.717003, 0.334314)
+bones/11/rotation = Quaternion(0.499115, -0.200321, 0.119811, 0.834506)
+bones/12/rotation = Quaternion(-0.0592424, -0.609651, 0.31522, 0.724881)
 bones/13/rotation = Quaternion(-0.0853228, 0.702285, -0.080503, 0.702165)
 bones/14/rotation = Quaternion(-0.5052, 0.457102, 0.515667, 0.519536)
-bones/15/rotation = Quaternion(0.646475, -0.320349, 0.608825, 0.329817)
-bones/16/rotation = Quaternion(0.216434, 0.412721, -0.101633, 0.878913)
-bones/17/rotation = Quaternion(-0.0217118, 0.317558, -0.0795239, 0.944649)
+bones/15/rotation = Quaternion(0.649392, -0.324746, 0.599073, 0.337551)
+bones/16/rotation = Quaternion(0.252965, 0.39685, -0.114748, 0.874844)
+bones/17/rotation = Quaternion(-0.0452067, 0.324402, -0.0911351, 0.940433)
 bones/18/rotation = Quaternion(0.390153, -0.551485, 0.465622, 0.5717)
 bones/19/rotation = Quaternion(0.964729, 0.111391, -0.013734, 0.23812)
 bones/20/rotation = Quaternion(0.181968, -0.112083, 0.0208726, 0.976673)
@@ -106,4 +106,4 @@ parameters/ReloadOneShot/request = 0
 parameters/ShootOneShot/active = false
 parameters/ShootOneShot/internal_active = false
 parameters/ShootOneShot/request = 0
-parameters/TimeScale/scale = 0.0200337
+parameters/TimeScale/scale = 2.0
