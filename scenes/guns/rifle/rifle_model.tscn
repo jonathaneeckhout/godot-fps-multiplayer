@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://csw5nuc8ni11y"]
+
+[ext_resource type="ArrayMesh" uid="uid://cfis6gei31tof" path="res://assets/models/weapons/rifle/rifle.obj" id="1_hoohm"]
+[ext_resource type="Texture2D" uid="uid://dmykrxsnga3gk" path="res://assets/models/weapons/rifle/rifle.png" id="2_s86wm"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3lx3g"]
+albedo_texture = ExtResource("2_s86wm")
+
+[node name="RifleModel" type="Node3D"]
+
+[node name="Rifle" type="MeshInstance3D" parent="."]
+transform = Transform3D(-0.1, 0, -8.74228e-09, 0, 0.1, 0, 8.74228e-09, 0, -0.1, 0, 0, -0.177945)
+mesh = ExtResource("1_hoohm")
+surface_material_override/0 = SubResource("StandardMaterial3D_3lx3g")

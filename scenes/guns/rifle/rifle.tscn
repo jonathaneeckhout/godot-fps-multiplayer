@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://6ntt3lqsx8vp"]
+[gd_scene load_steps=3 format=3 uid="uid://6ntt3lqsx8vp"]
 
 [ext_resource type="Script" uid="uid://dsqdiq4raglr8" path="res://classes/gun.gd" id="1_spaxu"]
+[ext_resource type="PackedScene" uid="uid://csw5nuc8ni11y" path="res://scenes/guns/rifle/rifle_model.tscn" id="2_fiac1"]
 
 [node name="Rifle" type="Node"]
 script = ExtResource("1_spaxu")
 damage = 15
 automatic = true
 shots_per_second = 10.0
+model_scene = ExtResource("2_fiac1")
 metadata/_custom_type_script = "uid://dsqdiq4raglr8"

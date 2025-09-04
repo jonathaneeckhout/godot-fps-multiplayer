@@ -1,10 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=17 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
 [ext_resource type="PackedScene" uid="uid://cil4pdqy7l0us" path="res://components/player/player_input/player_input.tscn" id="2_gmlin"]
 [ext_resource type="PackedScene" uid="uid://ccsbft8oecb47" path="res://scenes/player/model/player_model.tscn" id="3_fm80t"]
 [ext_resource type="PackedScene" uid="uid://c1ubuqokjv2g3" path="res://components/player/transform_synchronizer/transform_synchronizer.tscn" id="3_lvxji"]
+[ext_resource type="PackedScene" uid="uid://csw5nuc8ni11y" path="res://scenes/guns/rifle/rifle_model.tscn" id="4_gx1jg"]
 [ext_resource type="PackedScene" uid="uid://cautmgcgdliec" path="res://components/networking/network_interpolator/network_interpolator.tscn" id="6_qek5x"]
 [ext_resource type="PackedScene" uid="uid://cma5whogn6iyv" path="res://components/networking/property_buffer/property_buffer.tscn" id="7_0owmy"]
 [ext_resource type="PackedScene" uid="uid://dyoo4ranajnsr" path="res://components/networking/health_synchronizer/health_synchronizer.tscn" id="8_5gtgg"]
@@ -14,14 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://b8gqb8nuxmijf" path="res://scenes/player/ui/ammunition_display/ammunition_display.tscn" id="11_je7p5"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i1cj6"]
-albedo_color = Color(0.191175, 0.0817445, 1.20327e-08, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ya1xr"]
-material = SubResource("StandardMaterial3D_i1cj6")
-radius = 0.1
-height = 0.3
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_je7p5"]
 viewport_path = NodePath("SubViewport")
@@ -54,9 +47,7 @@ shape = SubResource("CapsuleShape3D_ya1xr")
 
 [node name="PlayerModel" parent="." instance=ExtResource("3_fm80t")]
 unique_name_in_owner = true
-
-[node name="Model" type="Node3D" parent="."]
-unique_name_in_owner = true
+visible = false
 
 [node name="Head" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -69,24 +60,11 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 
 [node name="AimMarker" type="Marker3D" parent="Head"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
 
-[node name="Hands" type="Node3D" parent="Head"]
-unique_name_in_owner = true
+[node name="GunPosition" type="Node3D" parent="Head"]
+transform = Transform3D(1.5, 0, 0, 0, -6.55671e-08, -1.5, 0, 1.5, -6.55671e-08, -0.35, -0.4, 0.4)
 
-[node name="LeftHand" type="MeshInstance3D" parent="Head/Hands"]
-transform = Transform3D(0.739161, -0.673529, 0, 0.488738, 0.536364, -0.688076, 0.463439, 0.508599, 0.725639, 0.146, -0.5, 0.778)
-mesh = SubResource("SphereMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="RightHand" type="MeshInstance3D" parent="Head/Hands"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, -0.5, 0.73)
-mesh = SubResource("SphereMesh_ya1xr")
-skeleton = NodePath("../..")
-
-[node name="LocalWeaponLocation" type="Marker3D" parent="Head/Hands/RightHand"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, -0.1)
-
-[node name="Muzzle" type="Marker3D" parent="Head/Hands"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+[node name="RifleModel" parent="Head/GunPosition" instance=ExtResource("4_gx1jg")]
+transform = Transform3D(-1, -8.74228e-08, 3.82137e-15, 0, -4.37114e-08, -1, 8.74228e-08, -1, 4.37114e-08, 0, 0, 0)
 
 [node name="PlayerInput" parent="." instance=ExtResource("2_gmlin")]
 

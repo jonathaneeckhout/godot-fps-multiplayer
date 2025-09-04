@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://gfal3sdrq1rf"]
+
+[ext_resource type="Script" uid="uid://crkw6h0rexkmp" path="res://scenes/weapon_location/weapon_location.gd" id="1_aimgf"]
+
+[node name="WeaponLocation" type="Node3D"]
+script = ExtResource("1_aimgf")

@@ -1,0 +1,2 @@
+class_name WeaponLocation
+extends Node3D

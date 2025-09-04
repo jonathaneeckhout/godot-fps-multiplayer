@@ -8,6 +8,12 @@ extends Node
 @export var shots_per_second: float = 3.0
 @export var reload_time: float = 1.5
 
+## The scene which will be used as part of the player's model
+@export var model_scene: PackedScene = null
+
+## The scene which will be used as a drop item
+@export var drop_scene: PackedScene = null
+
 var magazine: int = mag_size
 var spare_bullets: int = max_bullets
 var last_fire: float = 0.0

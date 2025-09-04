@@ -40,8 +40,8 @@ func _ready() -> void:
             hud.queue_free()
 
     # Todo: remove debug lines
-    # var gun: Gun = load("res://scenes/guns/pistol/Pistol.tscn").instantiate()
+    # var gun: Gun = load("res://scenes/guns/pistol/pistol.tscn").instantiate()
 
-    var gun: Gun = load("res://scenes/guns/rifle/Rifle.tscn").instantiate()
+    var gun: Gun = load("res://scenes/guns/rifle/rifle.tscn").instantiate()
 
     gun_synchronizer.equip_gun(gun)
