@@ -10,7 +10,8 @@ var player_input: PlayerInput = null
 var last_timestamp: float = 0.0
 
 var last_sync_timestamp: float = 0.0
-var last_sync_transform: Transform3D
+var last_sync_position: Vector3 = Vector3.ZERO
+var last_sync_rotation: Vector3 = Vector3.ZERO
 var last_head_rotation: Vector3 = Vector3.ZERO
 
 var interpolation_offset: float = 0.1
@@ -30,7 +31,8 @@ func _ready() -> void:
     assert(head != null, "Please set head")
 
     last_sync_timestamp = Connection.clock_synchronizer.get_time()
-    last_sync_transform = player.transform
+    last_sync_position = player.position
+    last_sync_rotation = player.rotation
 
 
 func _physics_process(delta: float) -> void:
@@ -55,7 +57,7 @@ func server_physics_process(_delta: float) -> void:
 
     last_timestamp = inputs[-1]["ts"]
 
-    _sync_trans.rpc_id(network_node.peer_id, last_timestamp, player.transform, head.rotation)
+    _sync_trans.rpc_id(network_node.peer_id, last_timestamp, player.position, player.rotation, head.rotation)
 
 func local_client_physics_process(_delta: float) -> void:
     local_client_sync_translation()
@@ -64,7 +66,7 @@ func local_client_physics_process(_delta: float) -> void:
 
     apply_movement_and_gravity(player_input.direction, player_input.jump)
 
-    position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
+    position_buffer.append({"ts": player_input.timestamp, "po": player.position, "ro": player.rotation})
 
 func local_client_sync_translation() -> void:
     if position_buffer.is_empty():
@@ -74,9 +76,9 @@ func local_client_sync_translation() -> void:
         position_buffer.remove_at(0)
 
     if position_buffer[0]["ts"] == last_sync_timestamp:
-        if position_buffer[0]["tf"] != last_sync_transform:
-            print("Expected {0} but got {1}".format([position_buffer[0]["tf"], last_sync_transform]))
-            player.transform = last_sync_transform
+        if position_buffer[0]["po"] != last_sync_position:
+            print("Expected {0} but got {1}".format([position_buffer[0]["po"], last_sync_position]))
+            player.position = last_sync_position
 
             #TODO: reapply inputs
 
@@ -109,12 +111,13 @@ func perform_physics_step(fraction: float):
     player.velocity *= fraction
 
 @rpc("call_remote", "authority", "unreliable")
-func _sync_trans(ts: float, tf: Transform3D, hr: Vector3) -> void:
+func _sync_trans(ts: float, po: Vector3, ro: Vector3, hr: Vector3) -> void:
     if ts < last_sync_timestamp:
         return
 
     last_sync_timestamp = ts
-    last_sync_transform = tf
+    last_sync_position = po
+    last_sync_rotation = ro
     last_head_rotation = hr
 
 
