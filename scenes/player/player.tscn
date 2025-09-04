@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=16 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
@@ -19,23 +19,6 @@
 [sub_resource type="ViewportTexture" id="ViewportTexture_je7p5"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_75vfm"]
-properties/0/path = NodePath("NetworkNode:network_id")
-properties/0/spawn = true
-properties/0/replication_mode = 0
-properties/1/path = NodePath("NetworkNode:peer_id")
-properties/1/spawn = true
-properties/1/replication_mode = 0
-properties/2/path = NodePath(".:username")
-properties/2/spawn = true
-properties/2/replication_mode = 0
-properties/3/path = NodePath(".:transform")
-properties/3/spawn = true
-properties/3/replication_mode = 0
-properties/4/path = NodePath("HealthSynchronizer:health")
-properties/4/spawn = true
-properties/4/replication_mode = 2
-
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_8afob")
 
@@ -47,7 +30,6 @@ shape = SubResource("CapsuleShape3D_ya1xr")
 
 [node name="PlayerModel" parent="." instance=ExtResource("3_fm80t")]
 unique_name_in_owner = true
-visible = false
 
 [node name="Head" type="Node3D" parent="."]
 unique_name_in_owner = true
@@ -125,6 +107,3 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "X"
 horizontal_alignment = 1
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_75vfm")

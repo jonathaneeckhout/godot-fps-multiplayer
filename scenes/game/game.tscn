@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://bynplakgjw7hk"]
+[gd_scene load_steps=11 format=3 uid="uid://bynplakgjw7hk"]
 
 [ext_resource type="Script" uid="uid://dknpiy2j1x40h" path="res://scenes/game/game.gd" id="1_5i0tg"]
-[ext_resource type="PackedScene" uid="uid://6gytalh108qd" path="res://components/map/player_spawner/player_spawner.tscn" id="1_7h61r"]
 [ext_resource type="PackedScene" uid="uid://c1117xmdglv32" path="res://scenes/player/player.tscn" id="1_sul5r"]
 [ext_resource type="PackedScene" uid="uid://dyxif56d2wdpv" path="res://components/map/random_spawn_location_picker/random_spawn_location_picker.tscn" id="4_kelw5"]
 [ext_resource type="PackedScene" uid="uid://dskdklxbhkwns" path="res://scenes/maps/space_station/space_station.tscn" id="4_lfrn8"]
 [ext_resource type="PackedScene" uid="uid://ctjnbruy0rpm5" path="res://scenes/spawn_location/spawn_location.tscn" id="6_5i0tg"]
+[ext_resource type="PackedScene" uid="uid://mnr37o6va7hm" path="res://scenes/moving_target/moving_target.tscn" id="7_87uf6"]
+[ext_resource type="PackedScene" uid="uid://crudn56qjbjq3" path="res://components/map/network_nodes_spawner/network_nodes_spawner.tscn" id="7_bdhmt"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7h61r"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -29,12 +30,12 @@ environment = SubResource("Environment_kelw5")
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="PlayerSpawner" parent="." node_paths=PackedStringArray("players_node") instance=ExtResource("1_7h61r")]
-players_node = NodePath("../NetworkNodes")
-player_scene = ExtResource("1_sul5r")
-
 [node name="NetworkNodes" type="Node3D" parent="."]
 unique_name_in_owner = true
+
+[node name="NetworkNodesSpawner" parent="." node_paths=PackedStringArray("network_nodes_sources") instance=ExtResource("7_bdhmt")]
+network_nodes_sources = [NodePath("../Dummies")]
+player_scene = ExtResource("1_sul5r")
 
 [node name="Map" type="Node3D" parent="."]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
@@ -68,6 +69,11 @@ transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 44, -6
 [node name="SpawnLocation7" parent="RandomSpawnLocationPicker" instance=ExtResource("6_5i0tg")]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 44, -6, -44)
 
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("uid://c1117xmdglv32", "uid://mnr37o6va7hm")
-spawn_path = NodePath("../NetworkNodes")
+[node name="Dummies" type="Node3D" parent="."]
+
+[node name="MovingTarget" parent="Dummies" instance=ExtResource("7_87uf6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, -6, 33)
+
+[node name="MovingTarget2" parent="Dummies" instance=ExtResource("7_87uf6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -6, 48)
+move = true

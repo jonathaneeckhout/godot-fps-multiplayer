@@ -1,6 +1,5 @@
 extends Node3D
 
-var game_scene: PackedScene = preload("res://scenes/game/game.tscn")
 
 func _ready() -> void:
     if "--server" in OS.get_cmdline_args():
@@ -14,13 +13,13 @@ func _ready() -> void:
 func start_server() -> void:
     get_window().title = "GFM (Server)"
 
+    %MapSpawner.load_map("Game")
+
     Engine.set_physics_ticks_per_second(30)
 
     Connection.game_server.create_server()
 
     get_tree().root.mode = Window.MODE_MINIMIZED
-
-    add_child(game_scene.instantiate())
 
 
 func start_client() -> void:
@@ -29,8 +28,6 @@ func start_client() -> void:
     Engine.set_physics_ticks_per_second(30)
 
     Connection.game_client.create_client()
-
-    add_child(game_scene.instantiate())
 
     await Connection.game_client.connected
 

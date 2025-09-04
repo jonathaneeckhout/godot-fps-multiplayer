@@ -6,6 +6,8 @@ var game_client: GameClient = null
 
 var clock_synchronizer: ClockSynchronizer = null
 
+var map_spawner: MapSpawner = null
+
 var _id_counter: int = 0
 var _network_nodes: Dictionary[int, Node3D] = {}
 

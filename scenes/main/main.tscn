@@ -1,10 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://djh7p2c6631mg"]
+[gd_scene load_steps=5 format=3 uid="uid://djh7p2c6631mg"]
 
 [ext_resource type="Script" uid="uid://bdwr4ui3678fi" path="res://scenes/main/main.gd" id="1_hyk8p"]
 [ext_resource type="PackedScene" uid="uid://btbve2wey7sua" path="res://scenes/networking/networking.tscn" id="2_k2fmo"]
+[ext_resource type="PackedScene" uid="uid://c22dj68tsncbn" path="res://components/map/map_spawner/map_spawner.tscn" id="3_k2fmo"]
+[ext_resource type="PackedScene" uid="uid://bynplakgjw7hk" path="res://scenes/game/game.tscn" id="4_l3cfh"]
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_hyk8p")
 
 [node name="Networking" parent="." instance=ExtResource("2_k2fmo")]
 unique_name_in_owner = true
+
+[node name="MapSpawner" parent="." node_paths=PackedStringArray("map_location") instance=ExtResource("3_k2fmo")]
+unique_name_in_owner = true
+map_location = NodePath("../Map")
+map_scenes = Dictionary[String, PackedScene]({
+"Game": ExtResource("4_l3cfh")
+})
+
+[node name="Map" type="Node3D" parent="."]

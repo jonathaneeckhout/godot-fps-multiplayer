@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://crudn56qjbjq3"]
+
+[ext_resource type="Script" uid="uid://l6aqarpdc1pe" path="res://components/map/network_nodes_spawner/network_nodes_spawner.gd" id="1_xnux8"]
+
+[node name="NetworkNodesSpawner" type="Node3D"]
+script = ExtResource("1_xnux8")
