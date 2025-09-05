@@ -105,6 +105,19 @@ func get_inputs(from: float, to: float) -> Array[Dictionary]:
 
     return filtered_inputs
 
+
+func get_inputs_since(start: float) -> Array[Dictionary]:
+    var filtered_inputs: Array[Dictionary] = []
+
+    for input in input_buffer:
+        var ts: float = input["ts"]
+
+        if ts > start:
+            filtered_inputs.append(input)
+
+    return filtered_inputs
+
+
 @rpc("call_remote", "any_peer", "reliable")
 func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool) -> void:
     if not multiplayer.is_server():

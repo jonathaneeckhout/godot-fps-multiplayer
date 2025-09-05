@@ -58,11 +58,11 @@ func server_physics_process(_delta: float) -> void:
     _sync_trans.rpc_id(network_node.peer_id, last_timestamp, player.transform, head.rotation)
 
 func local_client_physics_process(_delta: float) -> void:
-    local_client_sync_translation()
-
     apply_head_rotation(player_input.look_angle)
 
     apply_movement_and_gravity(player_input.direction, player_input.jump)
+
+    local_client_sync_translation()
 
     position_buffer.append({"ts": player_input.timestamp, "tf": player.transform})
 
@@ -77,6 +77,15 @@ func local_client_sync_translation() -> void:
         if position_buffer[0]["tf"] != last_sync_transform:
             print("Expected {0} but got {1}".format([position_buffer[0]["tf"], last_sync_transform]))
             player.transform = last_sync_transform
+
+            var inputs: Array[Dictionary] = player_input.get_inputs_since(last_sync_timestamp)
+
+            for input in inputs:
+                apply_head_rotation(input["la"])
+
+                update_physics()
+
+                apply_movement_and_gravity(input["di"], input["ju"])
 
 
 func apply_head_rotation(look_angle: Vector2) -> void:
