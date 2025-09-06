@@ -113,6 +113,8 @@ func lag_compensate_shot(timestamp: float) -> void:
 
     var network_nodes: Array[Node3D] = Connection.get_network_nodes()
 
+    var to_restore_nodes: Array[Node3D] = []
+
     # The player sees other nodes in the past so substract the interpolation offset
     var interpolated_timestamp: float = timestamp - 0.1
 
@@ -127,8 +129,10 @@ func lag_compensate_shot(timestamp: float) -> void:
         if other_network_node.network_id == network_node.network_id:
             continue
 
+        # Don't handle nodes without property_buffer
         var other_property_buffer: PropertyBuffer = other_node.get_node_or_null("PropertyBuffer")
-        assert(other_property_buffer, "PropertyBuffer not found")
+        if other_property_buffer == null:
+            continue
 
         old_transforms[other_network_node.network_id] = other_node.transform
 
@@ -136,10 +140,13 @@ func lag_compensate_shot(timestamp: float) -> void:
 
         other_node.force_update_transform()
 
+        to_restore_nodes.append(other_node)
+
+
     var hit: Dictionary = detect_hit()
 
     # Restore the transforms of the other network nodes
-    for other_node: Node3D in network_nodes:
+    for other_node: Node3D in to_restore_nodes:
         var other_network_node: NetworkNode = other_node.get_node_or_null("NetworkNode")
         assert(other_network_node != null, "Missing NetworkNode in other network node")
 

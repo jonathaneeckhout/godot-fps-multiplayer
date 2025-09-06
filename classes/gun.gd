@@ -21,6 +21,10 @@ var time_between_shots: float = 1 / shots_per_second
 var is_reloading: bool = false
 
 func _ready() -> void:
+    assert(model_scene != null, "ModelScene missing")
+
+    assert(drop_scene != null, "DropScene missing")
+
     magazine = mag_size
 
     spare_bullets = max_bullets

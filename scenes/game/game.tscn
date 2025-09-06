@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bynplakgjw7hk"]
+[gd_scene load_steps=13 format=3 uid="uid://bynplakgjw7hk"]
 
 [ext_resource type="Script" uid="uid://dknpiy2j1x40h" path="res://scenes/game/game.gd" id="1_5i0tg"]
 [ext_resource type="PackedScene" uid="uid://c1117xmdglv32" path="res://scenes/player/player.tscn" id="1_sul5r"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://ctjnbruy0rpm5" path="res://scenes/spawn_location/spawn_location.tscn" id="6_5i0tg"]
 [ext_resource type="PackedScene" uid="uid://mnr37o6va7hm" path="res://scenes/moving_target/moving_target.tscn" id="7_87uf6"]
 [ext_resource type="PackedScene" uid="uid://crudn56qjbjq3" path="res://components/map/network_nodes_spawner/network_nodes_spawner.tscn" id="7_bdhmt"]
+[ext_resource type="PackedScene" uid="uid://gfal3sdrq1rf" path="res://scenes/weapon_location/weapon_location.tscn" id="8_87uf6"]
+[ext_resource type="PackedScene" uid="uid://6ntt3lqsx8vp" path="res://scenes/guns/rifle/rifle.tscn" id="9_2a8rs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7h61r"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -34,7 +36,7 @@ shadow_enabled = true
 unique_name_in_owner = true
 
 [node name="NetworkNodesSpawner" parent="." node_paths=PackedStringArray("network_nodes_sources") instance=ExtResource("7_bdhmt")]
-network_nodes_sources = [NodePath("../Dummies")]
+network_nodes_sources = [NodePath("../Dummies"), NodePath("../WeaponLocations")]
 player_scene = ExtResource("1_sul5r")
 
 [node name="Map" type="Node3D" parent="."]
@@ -77,3 +79,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, -6, 33)
 [node name="MovingTarget2" parent="Dummies" instance=ExtResource("7_87uf6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -6, 48)
 move = true
+
+[node name="WeaponLocations" type="Node3D" parent="."]
+
+[node name="WeaponLocation" parent="WeaponLocations" instance=ExtResource("8_87uf6")]
+gun_scene = ExtResource("9_2a8rs")

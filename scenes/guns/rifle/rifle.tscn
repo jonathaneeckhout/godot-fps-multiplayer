@@ -9,4 +9,5 @@ damage = 15
 automatic = true
 shots_per_second = 10.0
 model_scene = ExtResource("2_fiac1")
+drop_scene = ExtResource("2_fiac1")
 metadata/_custom_type_script = "uid://dsqdiq4raglr8"
