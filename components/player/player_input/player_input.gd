@@ -11,6 +11,7 @@ var look_angle: Vector2 = Vector2.ZERO
 var jump: bool = false
 var fire: bool = false
 var reload: bool = false
+var use: bool = false
 var next_weapon: bool = false
 var previous_weapon: bool = false
 var timestamp: float = 0.0
@@ -70,6 +71,8 @@ func _physics_process(delta):
 
     reload = Input.is_action_just_pressed("reload")
 
+    use = Input.is_action_just_pressed("use")
+
     if _override_mouse:
         look_angle = Vector2.ZERO
     else:
@@ -83,12 +86,19 @@ func _physics_process(delta):
     _wheel_up = false
     _wheel_down = false
 
-    add_input(timestamp, direction, look_angle, jump, fire, reload)
+    add_input(timestamp, direction, look_angle, jump, fire, reload, use)
 
-    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire, reload)
+    _sync_input.rpc_id(1, timestamp, direction, look_angle, jump, fire, reload, use)
 
-func add_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool) -> void:
-    input_buffer.append({"ts": ts, "di": di, "la": la, "ju": ju, "fi": fi, "re": re})
+func add_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool, us: bool) -> void:
+    input_buffer.append({
+        "ts": ts,
+        "di": di,
+        "la": la,
+        "ju": ju,
+        "fi": fi,
+        "re": re,
+        "us": us})
 
     if input_buffer.size() > input_buffer_size:
         input_buffer.remove_at(0)
@@ -119,7 +129,7 @@ func get_inputs_since(start: float) -> Array[Dictionary]:
 
 
 @rpc("call_remote", "any_peer", "reliable")
-func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool) -> void:
+func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bool, us: bool) -> void:
     if not multiplayer.is_server():
         return
 
@@ -127,4 +137,4 @@ func _sync_input(ts: float, di: Vector2, la: Vector2, ju: bool, fi: bool, re: bo
     if network_node.peer_id != peer_id:
         return
 
-    add_input(ts, di, la, ju, fi, re)
+    add_input(ts, di, la, ju, fi, re, us)

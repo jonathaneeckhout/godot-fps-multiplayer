@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=18 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
@@ -13,6 +13,8 @@
 [ext_resource type="PackedScene" uid="uid://ct2j5i38fc5b2" path="res://components/player/animation_synchronizer/animation_synchronizer.tscn" id="10_fm80t"]
 [ext_resource type="PackedScene" uid="uid://bxpq3pehfwvmq" path="res://components/other_health_bar/other_health_bar.tscn" id="10_h17s1"]
 [ext_resource type="PackedScene" uid="uid://b8gqb8nuxmijf" path="res://scenes/player/ui/ammunition_display/ammunition_display.tscn" id="11_je7p5"]
+[ext_resource type="PackedScene" uid="uid://b1ay2t5lenq50" path="res://scenes/player/ui/use_label/use_label.tscn" id="14_fcs02"]
+[ext_resource type="PackedScene" uid="uid://c5ndw2wf01tkb" path="res://components/player/use_area_3d/use_area_3d.tscn" id="14_ugbui"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ya1xr"]
 
@@ -94,7 +96,7 @@ theme_override_constants/margin_bottom = 16
 layout_mode = 2
 gun_synchronizer = NodePath("../../../GunSynchronizer")
 
-[node name="Label" type="Label" parent="HUDCanvasLayer"]
+[node name="Crosshair" type="Label" parent="HUDCanvasLayer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -108,3 +110,20 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "X"
 horizontal_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="HUDCanvasLayer"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -61.0
+offset_right = 61.0
+offset_bottom = 87.0
+grow_horizontal = 2
+theme_override_constants/margin_top = 64
+
+[node name="UseLabel" parent="HUDCanvasLayer/MarginContainer" node_paths=PackedStringArray("use_area") instance=ExtResource("14_fcs02")]
+layout_mode = 2
+use_area = NodePath("../../../UseArea3D")
+
+[node name="UseArea3D" parent="." instance=ExtResource("14_ugbui")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 1.5)

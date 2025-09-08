@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5ndw2wf01tkb"]
+
+[ext_resource type="Script" uid="uid://bmji4xjipkmgt" path="res://components/player/use_area_3d/use_area_3d.gd" id="1_o4fef"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_fhpx0"]
+radius = 1.0
+
+[node name="UseArea3D" type="Area3D"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("1_o4fef")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_fhpx0")
+
+[connection signal="area_shape_entered" from="." to="." method="_on_area_shape_entered"]
+[connection signal="area_shape_exited" from="." to="." method="_on_area_shape_exited"]
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

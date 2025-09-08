@@ -1,5 +1,5 @@
 class_name WeaponLocation
-extends Node3D
+extends Area3D
 
 @export var gun_scene: PackedScene = null
 @export var respawn_time: float = 30.0

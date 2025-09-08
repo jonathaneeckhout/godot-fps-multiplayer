@@ -84,3 +84,7 @@ move = true
 
 [node name="WeaponLocation" parent="WeaponLocations" instance=ExtResource("8_87uf6")]
 gun_scene = ExtResource("9_2a8rs")
+
+[node name="WeaponLocation2" parent="WeaponLocations" instance=ExtResource("8_87uf6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 44, -7, 0)
+gun_scene = ExtResource("9_2a8rs")
