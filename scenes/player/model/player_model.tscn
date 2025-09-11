@@ -1,8 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccsbft8oecb47"]
+[gd_scene load_steps=15 format=3 uid="uid://ccsbft8oecb47"]
 
 [ext_resource type="PackedScene" uid="uid://b6o2jh30wk04w" path="res://assets/models/characters/alien_guy.glb" id="1_ixgjb"]
 [ext_resource type="Script" uid="uid://m0tuteth2is2" path="res://scenes/player/model/player_model.gd" id="2_6cs8s"]
-[ext_resource type="PackedScene" uid="uid://csw5nuc8ni11y" path="res://scenes/guns/rifle/rifle_model.tscn" id="3_38bnn"]
 
 [sub_resource type="AnimationNodeAdd2" id="AnimationNodeAdd2_6cs8s"]
 filter_enabled = true
@@ -71,19 +70,19 @@ script = ExtResource("2_6cs8s")
 [node name="Skeleton3D" parent="Skinned Mesh" index="0"]
 bones/1/position = Vector3(0.00292177, 0.0661921, 0.423626)
 bones/1/rotation = Quaternion(0.754657, -0.0881463, -0.0754293, 0.645781)
-bones/3/rotation = Quaternion(-0.0266822, -0.0537819, -0.00445872, 0.998186)
-bones/4/rotation = Quaternion(0.150494, -0.158668, -0.0256054, 0.975459)
-bones/5/rotation = Quaternion(0.110199, 0.107494, -0.00547892, 0.988064)
-bones/7/rotation = Quaternion(-0.0188965, 0.211185, -0.00012682, 0.977263)
+bones/3/rotation = Quaternion(-0.0294782, -0.05369, -0.00506645, 0.99811)
+bones/4/rotation = Quaternion(0.141979, -0.158304, -0.0274527, 0.976744)
+bones/5/rotation = Quaternion(0.115392, 0.107489, -0.00433322, 0.987478)
+bones/7/rotation = Quaternion(-0.0106044, 0.211337, 0.00121223, 0.977355)
 bones/9/rotation = Quaternion(-0.661364, -0.215719, -0.22314, 0.682841)
-bones/10/rotation = Quaternion(0.465228, 0.405921, -0.708694, 0.341386)
-bones/11/rotation = Quaternion(0.511199, -0.198516, 0.122685, 0.827173)
-bones/12/rotation = Quaternion(-0.0522282, -0.615003, 0.322673, 0.717583)
+bones/10/rotation = Quaternion(0.458398, 0.402223, -0.719096, 0.33315)
+bones/11/rotation = Quaternion(0.495619, -0.201183, 0.119204, 0.836467)
+bones/12/rotation = Quaternion(-0.0484746, -0.608725, 0.312078, 0.727812)
 bones/13/rotation = Quaternion(-0.0853228, 0.702285, -0.080503, 0.702165)
 bones/14/rotation = Quaternion(-0.5052, 0.457102, 0.515667, 0.519536)
-bones/15/rotation = Quaternion(0.653731, -0.324829, 0.592619, 0.340477)
-bones/16/rotation = Quaternion(0.26826, 0.390437, -0.120049, 0.872458)
-bones/17/rotation = Quaternion(-0.049713, 0.322384, -0.0979365, 0.940216)
+bones/15/rotation = Quaternion(0.650409, -0.322939, 0.599941, 0.335782)
+bones/16/rotation = Quaternion(0.248346, 0.398657, -0.113076, 0.875563)
+bones/17/rotation = Quaternion(-0.0366067, 0.318437, -0.0910551, 0.94285)
 bones/18/rotation = Quaternion(0.390153, -0.551485, 0.465622, 0.5717)
 bones/19/rotation = Quaternion(0.964729, 0.111391, -0.013734, 0.23812)
 bones/20/rotation = Quaternion(0.181968, -0.112083, 0.0208726, 0.976673)
@@ -95,16 +94,13 @@ bones/26/rotation = Quaternion(-0.578719, -0.0501391, -0.163256, 0.797444)
 bones/27/rotation = Quaternion(-0.000137223, 0.964307, -0.264787, -0.000499584)
 
 [node name="GunBoneAttachment3D" type="BoneAttachment3D" parent="Skinned Mesh/Skeleton3D" index="2"]
-transform = Transform3D(-0.00197496, 0.970309, 0.24186, 0.996383, 0.0224545, -0.0819478, -0.0849457, 0.240823, -0.966844, -0.311682, 0.686227, 0.414356)
+transform = Transform3D(-0.00263777, 0.970328, 0.241779, 0.996444, 0.0229101, -0.0810737, -0.0842073, 0.240705, -0.966938, -0.311659, 0.69386, 0.41737)
 bone_name = "DEF-f_middle01R"
 bone_idx = 18
 
 [node name="GunPosition" type="Node3D" parent="Skinned Mesh/Skeleton3D/GunBoneAttachment3D" index="0"]
 unique_name_in_owner = true
 transform = Transform3D(-4.37114e-08, 1, 0, -0.965926, -4.2222e-08, -0.258819, -0.258819, -1.13133e-08, 0.965926, 0, 0, 0)
-
-[node name="RifleModel" parent="Skinned Mesh/Skeleton3D/GunBoneAttachment3D/GunPosition" index="0" instance=ExtResource("3_38bnn")]
-transform = Transform3D(1, 1.86265e-09, -1.49012e-08, -1.86265e-09, 1, -1.49012e-08, 0, -2.98023e-08, 1, 0, 0, 0)
 
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
 unique_name_in_owner = true

@@ -3,6 +3,14 @@ extends Node3D
 
 @onready var animation_tree: AnimationTree = %AnimationTree
 
+func equip_gun(gun: Gun) -> void:
+    var gun_models := %GunPosition.get_children()
+
+    for gun_model in gun_models:
+        gun_model.queue_free()
+
+    if gun != null:
+        %GunPosition.add_child(gun.model_scene.instantiate())
 
 func fire() -> void:
     animation_tree.set("parameters/ShootOneShot/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

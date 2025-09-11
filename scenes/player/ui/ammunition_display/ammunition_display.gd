@@ -8,6 +8,7 @@ func _ready() -> void:
 
     gun_synchronizer.fired.connect(_on_fired)
     gun_synchronizer.reloaded.connect(_on_reloaded)
+    gun_synchronizer.equiped_gun.connect(_on_equiped)
 
     update_display()
 
@@ -28,4 +29,7 @@ func _on_fired() -> void:
 
 
 func _on_reloaded() -> void:
+    update_display()
+
+func _on_equiped() -> void:
     update_display()

@@ -3,6 +3,7 @@ extends Node
 
 signal fired()
 signal reloaded()
+signal equiped_gun()
 
 @export var gun: Gun = null
 
@@ -98,7 +99,9 @@ func equip_gun(new_gun: Gun) -> Gun:
     add_child(new_gun)
 
     if network_node.mode == NetworkNode.Modes.SERVER:
-        pass
+        _equip_gun.rpc_id(network_node.peer_id, gun.scene_file_path)
+
+    equiped_gun.emit()
 
     return old_gun
 
@@ -187,6 +190,12 @@ func detect_hit() -> Dictionary:
 
 func get_gun() -> Gun:
     return gun
+
+@rpc("call_remote", "authority", "reliable")
+func _equip_gun(gun_scene_path: String) -> void:
+    var gun_scene: PackedScene = load(gun_scene_path)
+
+    equip_gun(gun_scene.instantiate())
 
 
 @rpc("call_remote", "authority", "reliable")

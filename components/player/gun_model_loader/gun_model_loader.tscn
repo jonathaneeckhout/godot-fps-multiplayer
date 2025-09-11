@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ba31loxufoos2"]
+
+[ext_resource type="Script" uid="uid://pqp3qt08pd6v" path="res://components/player/gun_model_loader/gun_model_loader.gd" id="1_r6xbw"]
+
+[node name="GunModelLoader" type="Node"]
+script = ExtResource("1_r6xbw")
