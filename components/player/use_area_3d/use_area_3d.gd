@@ -14,6 +14,7 @@ var gun_model_loader: GunModelLoader = null
 
 var last_timestamp: float = 0.0
 
+
 func _ready() -> void:
     player = get_parent()
     assert(player != null)

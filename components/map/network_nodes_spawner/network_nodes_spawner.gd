@@ -59,6 +59,10 @@ func add_node(peer_id: int, network_id: int, node_name: String, node_position: V
 
     network_node.peer_id = peer_id
 
+    var respawner: Respawner = node.get_node_or_null("Respawner")
+    if respawner != null:
+        respawner.respawned.connect(_on_node_respawned)
+
     if network_id >= 0:
         network_node.network_id = network_id
 
@@ -97,6 +101,10 @@ func _on_child_entered(child: Node) -> void:
 
 func _on_child_exited(child: Node) -> void:
     _remove_network_node.rpc(child.name)
+
+
+func _on_node_respawned(node: Node3D) -> void:
+    node.position = spawn_location_picker.get_spawn_location()
 
 
 @rpc("call_remote", "authority", "reliable")

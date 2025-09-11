@@ -2,6 +2,7 @@ class_name HealthSynchronizer
 extends Node
 
 signal health_changed(hp: int, amount: int)
+signal died()
 
 @export var health: int = 100
 
@@ -10,8 +11,10 @@ var max_health: int = health
 var parent: Node3D = null
 var network_node: NetworkNode = null
 
+var dead: bool = false
 
 var last_synced_health: int = health
+
 
 func _ready() -> void:
     parent = get_parent()
@@ -40,6 +43,11 @@ func hurt(amount: int) -> void:
 
     health = clamp(0, health - amount, max_health)
 
+    if not dead and health == 0:
+        dead = true
+        died.emit()
+        print("HIER")
+
 
 func heal(amount: int) -> void:
     if network_node.mode != NetworkNode.Modes.SERVER:
@@ -48,9 +56,22 @@ func heal(amount: int) -> void:
     health = clamp(0, health + amount, max_health)
 
 
+func restore() -> void:
+    health = max_health
+
+    dead = false
+
+
+func is_dead() -> bool:
+    return dead
+
+
 @rpc("call_remote", "authority", "reliable")
 func _update_health(value: int) -> void:
     health = value
+
+    if is_dead():
+        died.emit()
 
 
 @rpc("call_remote", "any_peer", "reliable")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://c1117xmdglv32"]
+[gd_scene load_steps=19 format=3 uid="uid://c1117xmdglv32"]
 
 [ext_resource type="Script" uid="uid://beyc6ronf5eik" path="res://scenes/player/player.gd" id="1_8afob"]
 [ext_resource type="PackedScene" uid="uid://by34xgh6dv6y1" path="res://components/networking/network_node/network_node.tscn" id="2_75vfm"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bxpq3pehfwvmq" path="res://components/other_health_bar/other_health_bar.tscn" id="10_h17s1"]
 [ext_resource type="PackedScene" uid="uid://ba31loxufoos2" path="res://components/player/gun_model_loader/gun_model_loader.tscn" id="10_myrg7"]
 [ext_resource type="PackedScene" uid="uid://b8gqb8nuxmijf" path="res://scenes/player/ui/ammunition_display/ammunition_display.tscn" id="11_je7p5"]
+[ext_resource type="PackedScene" uid="uid://cc3yw83g8ce6x" path="res://components/networking/respawner/respawner.tscn" id="12_myrg7"]
 [ext_resource type="PackedScene" uid="uid://b1ay2t5lenq50" path="res://scenes/player/ui/use_label/use_label.tscn" id="14_fcs02"]
 [ext_resource type="PackedScene" uid="uid://c5ndw2wf01tkb" path="res://components/player/use_area_3d/use_area_3d.tscn" id="14_ugbui"]
 
@@ -70,6 +71,8 @@ player_model = NodePath("../PlayerModel")
 
 [node name="AnimationSynchronizer" parent="." node_paths=PackedStringArray("head") instance=ExtResource("10_fm80t")]
 head = NodePath("../Head")
+
+[node name="Respawner" parent="." instance=ExtResource("12_myrg7")]
 
 [node name="OtherHealthBar" parent="." instance=ExtResource("10_h17s1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5, 0)

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cc3yw83g8ce6x"]
+
+[ext_resource type="Script" uid="uid://cl0nmsuuefs2c" path="res://components/networking/respawner/respawner.gd" id="1_fjwrh"]
+
+[node name="Respawner" type="Node"]
+script = ExtResource("1_fjwrh")

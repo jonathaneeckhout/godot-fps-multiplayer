@@ -27,6 +27,7 @@ var input_buffer: Array[Dictionary] = []
 
 var player: Player = null
 var network_node: NetworkNode = null
+var health_synchronizer: HealthSynchronizer = null
 
 func _ready() -> void:
     player = get_parent()
@@ -34,6 +35,9 @@ func _ready() -> void:
 
     network_node = player.get_node_or_null("NetworkNode")
     assert(network_node != null, "Missing NetworkNode")
+
+    health_synchronizer = player.get_node_or_null("HealthSynchronizer")
+    assert(health_synchronizer != null, "Missing HealthSynchronizer")
 
     if network_node.mode != NetworkNode.Modes.LOCAL:
         set_physics_process(false)
@@ -61,6 +65,9 @@ func _input(event: InputEvent) -> void:
                 _wheel_down = true
 
 func _physics_process(delta):
+    if health_synchronizer.is_dead():
+        return
+
     timestamp = Connection.clock_synchronizer.get_time()
 
     direction = Input.get_vector("strafe_right", "strafe_left", "move_down", "move_up")
