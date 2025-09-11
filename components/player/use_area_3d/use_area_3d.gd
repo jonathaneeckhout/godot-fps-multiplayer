@@ -10,6 +10,8 @@ var player: Player = null
 var network_node: NetworkNode = null
 var player_input: PlayerInput = null
 
+var last_timestamp: float = 0.0
+
 func _ready() -> void:
     player = get_parent()
     assert(player != null)
@@ -25,7 +27,15 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
-    pass
+    var inputs: Array[Dictionary] = player_input.get_inputs(last_timestamp, Connection.clock_synchronizer.get_time())
+    if inputs.is_empty():
+        return
+
+    for input: Dictionary in inputs:
+        if input["us"] and detected_gun != null:
+            var picked_up_gun: Gun = detected_gun.pick_up()
+
+    last_timestamp = inputs[-1]["ts"]
 
 
 func _on_area_shape_entered(_area_rid: RID, area: Area3D, _area_shape_index: int, _local_shape_index: int) -> void:
