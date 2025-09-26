@@ -20,3 +20,7 @@ Setup Godot to run mutliple instances:
 - Add launch arguments "--client" to the others
 
 Run the project and have fun!
+
+## Screenshots
+<img width="1150" height="655" alt="Screenshot from 2025-09-26 19-57-48" src="https://github.com/user-attachments/assets/8749af44-d25a-4a06-abe4-99032ccfa898" />
+<img width="915" height="574" alt="Screenshot from 2025-09-26 20-00-10" src="https://github.com/user-attachments/assets/8f1d7272-883e-4074-ab96-3c3ee25d79fa" />
