@@ -16,7 +16,7 @@ Setup Godot to run mutliple instances:
 
 - Debug --> Customize Run Instances ... --> Enable Multiple Instances
 - Enable 2 or more instances (1 server and 1+ clients)
-- Add launch arguments "--server --headless" to once instance
+- Add launch arguments "--server" to once instance
 - Add launch arguments "--client" to the others
 
 Run the project and have fun!
